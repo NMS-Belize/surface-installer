@@ -121,45 +121,46 @@ class SurfaceConfigurationForm(forms.Form):
     )
 
     # wis2box options
-    # regional
-    wis2box_user_regional = forms.CharField(
-        label=" Regional WIS2BOX Storage Username:", 
-        required=False, 
-        widget=forms.TextInput(attrs={'class': 'form-control',})
+    surface_encryption_key = forms.CharField(
+        label="Encryption Key:", 
+        required=True, 
+        max_length=44,  # Ensures Django enforces the limit at the model/form level
+        widget=forms.TextInput(attrs={'class': 'form-control disabled-field form-larger-size', 'maxlength': '44'})  # Limits input length in the frontend
     )
-    wis2box_password_regional = forms.CharField(
-        label="Regional WIS2BOX Storage Password:", 
-        required=False, 
-        widget=forms.PasswordInput(attrs={'class': 'form-control',})
-    )
-    wis2box_endpoint_regional = forms.CharField(
-        label="Regional Endpoint:", 
-        required=False, 
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'eg.. xxx.xx.xxx.xx:port#'})
-    )
-
-    # local
-    wis2box_user_local = forms.CharField(
-        label="Local WIS2BOX Storage Username:", 
-        required=False, 
-        widget=forms.TextInput(attrs={'class': 'form-control',})
-    )
-    wis2box_password_local = forms.CharField(
-        label="Local WIS2BOX Storage Password:", 
-        required=False, 
-        widget=forms.PasswordInput(attrs={'class': 'form-control',})
-    )
-    wis2box_endpoint_local = forms.CharField(
-        label="Local Endpoint:", 
-        required=False, 
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'eg.. xxx.xx.xxx.xx:port#'})
-    )
-
-    # wis2box_topic_hierarchy = forms.CharField(
-    #     label="Topic Hierarchy:", 
+    # # regional
+    # wis2box_user_regional = forms.CharField(
+    #     label=" Regional WIS2BOX Storage Username:", 
     #     required=False, 
-    #     widget=forms.TextInput(attrs={'class': 'form-control form-larger-size',})
+    #     widget=forms.TextInput(attrs={'class': 'form-control',})
     # )
+    # wis2box_password_regional = forms.CharField(
+    #     label="Regional WIS2BOX Storage Password:", 
+    #     required=False, 
+    #     widget=forms.PasswordInput(attrs={'class': 'form-control',})
+    # )
+    # wis2box_endpoint_regional = forms.CharField(
+    #     label="Regional Endpoint:", 
+    #     required=False, 
+    #     widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'eg.. xxx.xx.xxx.xx:port#'})
+    # )
+
+    # # local
+    # wis2box_user_local = forms.CharField(
+    #     label="Local WIS2BOX Storage Username:", 
+    #     required=False, 
+    #     widget=forms.TextInput(attrs={'class': 'form-control',})
+    # )
+    # wis2box_password_local = forms.CharField(
+    #     label="Local WIS2BOX Storage Password:", 
+    #     required=False, 
+    #     widget=forms.PasswordInput(attrs={'class': 'form-control',})
+    # )
+    # wis2box_endpoint_local = forms.CharField(
+    #     label="Local Endpoint:", 
+    #     required=False, 
+    #     widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'eg.. xxx.xx.xxx.xx:port#'})
+    # )
+
 
     # Define the list of options as choices
     TOPIC_HIERARCHY_CHOICES = [
@@ -188,6 +189,6 @@ class SurfaceConfigurationForm(forms.Form):
     wis2box_topic_hierarchy = forms.ChoiceField(
         label="Topic Hierarchy:",
         choices=TOPIC_HIERARCHY_CHOICES,
-        required=False,
+        required=True,
         widget=forms.Select(attrs={'class': 'form-control form-larger-size'})
     )

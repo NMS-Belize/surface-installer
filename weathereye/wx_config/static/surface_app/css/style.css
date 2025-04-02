@@ -192,6 +192,27 @@ body {
     transform: scale(1);
   }
 
+  .btn-warning {
+    background-color: #ffc107;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+  }
+  
+  .btn-warning:hover {
+    background-color: #ffca2c;
+    transform: scale(1.05);
+  }
+  
+  .btn-wawrning:active {
+    background-color: #ffcd39;
+    transform: scale(1);
+  }
+
   .btn-submit {
     background-color: #4ccb3d;
     color: white;
@@ -382,6 +403,11 @@ body {
   .btn-continue {
     display: flex;
     justify-content: right;
+  }
+
+  .btn-generate {
+    display: flex;
+    justify-content: left;
   }
 
   /* hide class */

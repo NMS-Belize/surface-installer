@@ -343,21 +343,31 @@
             </p>
           
             <p>
-              <strong>Note:</strong> Ensure you have the correct endpoint, username and password. 
+              <strong>Note:</strong> Ensure you select the correct topic hierarchy and setup the encryption key. 
               <!-- You can apply for an LRGS account through the following organizations: -->
             </p>
 
-            <p style="font-size: smaller;"> <span class="required"></span>These options are NOT required!</p>
+            <!-- <p style="font-size: smaller;"> <span class="required"></span>These options are NOT required!</p> -->
           
           </div>
 
           <div class="form-group" id="topical-hierarchy-wis2">
-            <label for="{{ form.wis2box_topic_hierarchy.id_for_label }}">{{ form.wis2box_topic_hierarchy.label }}</label>
+            <label for="{{ form.wis2box_topic_hierarchy.id_for_label }}"><span class="required"></span>{{ form.wis2box_topic_hierarchy.label }}</label>
             {{ form.wis2box_topic_hierarchy }}
           </div>
 
-          <div class="toggle-wis2-container">
-            <!-- The toggle button regional wis2 -->
+          <div class="form-group" id="surface-encryption-key">
+            <label for="{{ form.surface_encryption_key.id_for_label }}"><span class="required"></span>{{ form.surface_encryption_key.label }}</label>
+            {{ form.surface_encryption_key }}
+
+            <button type="button" class="btn btn-warning btn-generate" onclick="generateEncryptionKey()">Generate</button>
+
+          </div>
+
+          <!-- <button type="button" class="btn btn-warning btn-generate" onclick="">Generate</button> -->
+
+          <!-- The toggle buttons regional and local wis2 -->
+          <!-- <div class="toggle-wis2-container">
             <div class="toggle-regional-wis2-container">
               <label style="font-size: 20px; margin-right: 10px;">Regional WIS2BOX</label>
               <label class="switch">
@@ -366,7 +376,6 @@
               </label>
             </div>
 
-            <!-- The toggle button local wis2 -->
             <div class="toggle-local-wis2-container">
               <label style="font-size: 20px; margin-right: 10px;">Local WIS2BOX</label>
               <label class="switch">
@@ -374,9 +383,9 @@
                 <span class="slider"></span>
               </label>
             </div>
-          </div>
+          </div> -->
     
-          <div class="form-group" id="regional-wis2">
+          <!-- <div class="form-group" id="regional-wis2">
             <label for="{{ form.wis2box_user_regional.id_for_label }}">{{ form.wis2box_user_regional.label }}</label>
             {{ form.wis2box_user_regional }}
 
@@ -404,7 +413,7 @@
 
             <label for="{{ form.wis2box_endpoint_local.id_for_label }}">{{ form.wis2box_endpoint_local.label }}</label>
             {{ form.wis2box_endpoint_local }}
-          </div>
+          </div> -->
 
         </div>
 
@@ -490,11 +499,16 @@
             </div>
 
             <div class="summary-item">
-              <label for="{{ form.wis2box_topic_hierarchy.id_for_label }}"><span></span>{{ form.wis2box_topic_hierarchy.label }}</label>
+              <label for="{{ form.wis2box_topic_hierarchy.id_for_label }}"><span class="required"></span>{{ form.wis2box_topic_hierarchy.label }}</label>
               <input type="text" id="summary16" class="summary-input" value="" disabled>
             </div>
-            
+
             <div class="summary-item">
+              <label for="{{ form.surface_encryption_key.id_for_label }}"><span class="required"></span>{{ form.surface_encryption_key.label }}</label>
+              <input type="text" id="summary17" class="summary-input" value="" disabled>
+            </div>
+            
+            <!-- <div class="summary-item">
               <label for="{{ form.wis2box_user_regional.id_for_label }}"><span></span>{{ form.wis2box_user_regional.label }}</label>
               <input type="text" id="summary17" class="summary-input" value="" disabled>
             </div>
@@ -522,7 +536,8 @@
             <div class="summary-item">
               <label for="{{ form.wis2box_endpoint_local.id_for_label }}"><span></span>{{ form.wis2box_endpoint_local.label }}</label>
               <input type="text" id="summary22" class="summary-input" value="" disabled>
-            </div>                        
+            </div>                         
+            -->
 
           </div>
 
@@ -580,25 +595,41 @@
             }
         });
 
-        // JavaScript to toggle visibility of the regional wis2 details div
-        document.getElementById("toggle-regional-wis2").addEventListener("change", function() {
-            var detailsDiv = document.getElementById("regional-wis2");
-            if (this.checked) {
-                detailsDiv.style.display = "block";
-            } else {
-                detailsDiv.style.display = "none";
-            }
-        });
+        // // JavaScript to toggle visibility of the regional wis2 details div
+        // document.getElementById("toggle-regional-wis2").addEventListener("change", function() {
+        //     var detailsDiv = document.getElementById("regional-wis2");
+        //     if (this.checked) {
+        //         detailsDiv.style.display = "block";
+        //     } else {
+        //         detailsDiv.style.display = "none";
+        //     }
+        // });
 
-        // JavaScript to toggle visibility of the regional wis2 details div
-        document.getElementById("toggle-local-wis2").addEventListener("change", function() {
-            var detailsDiv = document.getElementById("local-wis2");
-            if (this.checked) {
-                detailsDiv.style.display = "block";
-            } else {
-                detailsDiv.style.display = "none";
-            }
-        });
+        // // JavaScript to toggle visibility of the regional wis2 details div
+        // document.getElementById("toggle-local-wis2").addEventListener("change", function() {
+        //     var detailsDiv = document.getElementById("local-wis2");
+        //     if (this.checked) {
+        //         detailsDiv.style.display = "block";
+        //     } else {
+        //         detailsDiv.style.display = "none";
+        //     }
+        // });
+
+
+        function generateEncryptionKey() {
+          fetch('gen-key/')
+          .then(response => response.json())
+          .then(data => {
+              if (data.key) {
+                  document.querySelector("#id_surface_encryption_key").value = data.key;
+                  document.querySelector("#summary17").value = data.key;
+              } else {
+                  alert("Failed to generate key.");
+              }
+          })
+          .catch(error => console.error("Error fetching encryption key:", error));
+        }
+
   </script>
 
   <!-- Including js file -->

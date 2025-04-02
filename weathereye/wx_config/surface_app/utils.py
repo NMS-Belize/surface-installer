@@ -149,32 +149,34 @@ def write_out_production_variables(form):
         # Check if wis2box_topic_hierarchy has content (after stripping whitespace)
         topic_hierarchy_entered = bool(form.cleaned_data.get("wis2box_topic_hierarchy", "").strip())
 
-        # Check if regional fields have content (after stripping whitespace)
-        regional_fields_filled = all(
-            form.cleaned_data.get(field, "").strip() for field in ["wis2box_user_regional", "wis2box_password_regional", "wis2box_endpoint_regional"]
-        )
+        # # Check if regional fields have content (after stripping whitespace)
+        # regional_fields_filled = all(
+        #     form.cleaned_data.get(field, "").strip() for field in ["wis2box_user_regional", "wis2box_password_regional", "wis2box_endpoint_regional"]
+        # )
 
-        # Check if local fields have content (after stripping whitespace)
-        local_fields_filled = all(
-            form.cleaned_data.get(field, "").strip() for field in ["wis2box_user_local", "wis2box_password_local", "wis2box_endpoint_local"]
-        )
+        # # Check if local fields have content (after stripping whitespace)
+        # local_fields_filled = all(
+        #     form.cleaned_data.get(field, "").strip() for field in ["wis2box_user_local", "wis2box_password_local", "wis2box_endpoint_local"]
+        # )
 
-        # Set enable flags based on conditions
-        enable_wis2box_regional = "true" if topic_hierarchy_entered and regional_fields_filled else "false"
-        enable_wis2box_local = "true" if topic_hierarchy_entered and local_fields_filled else "false"
+        # # Set enable flags based on conditions
+        # enable_wis2box_regional = "true" if topic_hierarchy_entered and regional_fields_filled else "false"
+        # enable_wis2box_local = "true" if topic_hierarchy_entered and local_fields_filled else "false"
 
-        # Write to file
-        prod.write(f'\nENABLE_WIS2BOX_REGIONAL={enable_wis2box_regional}\n')
-        prod.write(f'ENABLE_WIS2BOX_LOCAL={enable_wis2box_local}\n')
+        # # Write to file
+        # prod.write(f'\nENABLE_WIS2BOX_REGIONAL={enable_wis2box_regional}\n')
+        # prod.write(f'ENABLE_WIS2BOX_LOCAL={enable_wis2box_local}\n')
 
         # Write other fields
-        prod.write(f'\nWIS2BOX_USER_REGIONAL={form.cleaned_data["wis2box_user_regional"]}\n')
-        prod.write(f'WIS2BOX_PASSWORD_REGIONAL={form.cleaned_data["wis2box_password_regional"]}\n')
-        prod.write(f'WIS2BOX_ENDPOINT_REGIONAL={form.cleaned_data["wis2box_endpoint_regional"]}\n')
+        # prod.write(f'\nWIS2BOX_USER_REGIONAL={form.cleaned_data["wis2box_user_regional"]}\n')
+        # prod.write(f'WIS2BOX_PASSWORD_REGIONAL={form.cleaned_data["wis2box_password_regional"]}\n')
+        # prod.write(f'WIS2BOX_ENDPOINT_REGIONAL={form.cleaned_data["wis2box_endpoint_regional"]}\n')
 
-        prod.write(f'\nWIS2BOX_USER_LOCAL={form.cleaned_data["wis2box_user_local"]}\n')
-        prod.write(f'WIS2BOX_PASSWORD_LOCAL={form.cleaned_data["wis2box_password_local"]}\n')
-        prod.write(f'WIS2BOX_ENDPOINT_LOCAL={form.cleaned_data["wis2box_endpoint_local"]}\n')
+        # prod.write(f'\nWIS2BOX_USER_LOCAL={form.cleaned_data["wis2box_user_local"]}\n')
+        # prod.write(f'WIS2BOX_PASSWORD_LOCAL={form.cleaned_data["wis2box_password_local"]}\n')
+        # prod.write(f'WIS2BOX_ENDPOINT_LOCAL={form.cleaned_data["wis2box_endpoint_local"]}\n')
+
+        prod.write(f'SURFACE_SECRET_ENCRYPTION_KEY={form.cleaned_data["surface_encryption_key"]}\n')
 
         prod.write(f'\nWIS2BOX_TOPIC_HIERARCHY={form.cleaned_data["wis2box_topic_hierarchy"]}\n')
 

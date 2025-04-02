@@ -1,5 +1,6 @@
 import os
 import pwd
+from cryptography.fernet import Fernet
 
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -72,6 +73,11 @@ def config_complete(request, task_id):
         return render(request, 'surface_app/config_complete.html', {'task_id': task_id})
     else:
         return redirect(reverse('wx_configuration'))
+    
+
+def gen_encrypt_key(request):
+    key = Fernet.generate_key().decode('utf-8')  # 44-char Base64 key
+    return JsonResponse({"key": key})
     
 
 # # retry configuration with the same env variables
