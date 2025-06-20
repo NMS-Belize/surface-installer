@@ -1,6 +1,6 @@
-"""Top-level package for WeatherEye."""
+"""Top-level package for surface-installer."""
 
 
-__author__ = """Ian Edwards"""
-__email__ = 'ian@myacorn.com'
+__author__ = """National Meteorological Service of Belize"""
+__email__ = 'nmstechbz@gmail.com'
 __version__ = '0.1.0'

@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "surface-installer"
+version = "0.1.0"
+description = "SURFACE Installer Python Package and CLI"
+readme = "README.rst"
+requires-python = ">=3.6"
+license = { text = "MIT license" }
+authors = [
+  { name = "Ian Edwards", email = "ian@myacorn.com" },
+  { name = "Jeremiah Hammond", email = "jeremiahhammond14@gmail.com" },
+  { name = "National Meteorological Service of Belize", email = "nmstechbz@gmail.com" },
+]
+keywords = ["surface-installer"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+]
+
+dependencies = [
+    "Click>=7.0",
+    "ansible",
+    "ansible-runner==2.4.0",
+    "django==4.1",
+    "celery>=4.0",
+    "redis"
+]
+
+[project.urls]
+Homepage = "https://github.com/NMS-Belize/surface-installer"
+
+[project.scripts]
+surface-installer = "weathereye.cli:main"
+surface = "weathereye.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["weathereye", "weathereye.*"]
+
