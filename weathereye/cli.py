@@ -9,7 +9,7 @@ import weathereye.weathereye as wx
 
 @click.group()
 def main(args=None):
-    """weathereye command-line interface"""
+    """surface-installer command-line interface"""
     return 0
 
 
