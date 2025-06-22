@@ -11,7 +11,9 @@
         - name: Check Supported Systems
           ansible.builtin.fail:
             msg: The remote machine's system is currently not supported. See docs.weathereye.org for supported operating systems and distributions.
-          when: ansible_facts['distribution'] != "Ubuntu" or ansible_facts['distribution_version'] != "22.04"
+          # when: ansible_facts['distribution'] != "Ubuntu" or ansible_facts['distribution_version'] != "22.04"
+          # allow ubuntu versions greater than or equal to 22.04
+          when: ansible_facts['distribution'] != "Ubuntu" or ansible_facts['distribution_version'] not in ["22.04", "24.04"]
 
 
 
