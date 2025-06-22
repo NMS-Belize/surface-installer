@@ -96,6 +96,12 @@
       ansible.builtin.shell: redis-server --port 52377 --save "" --appendonly no
       async: 10800
       poll: 0
+
+  # ensure that the manage.py file is executable
+    - name: Ensure manage.py is executable
+      ansible.builtin.file:
+        path: "{{ django_webapp_path }}/manage.py"
+        mode: '0755'
   
   # run database migrations and collectstatic Files
     - name: Make migrations and collectstatic files

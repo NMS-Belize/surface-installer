@@ -8,13 +8,13 @@ Installation
 Stable release
 --------------
 
-To install WeatherEye, run this command in your terminal:
+To install surface-installer, run this command in your terminal:
 
 .. code-block:: console
 
-    $ pip install weathereye
+    $ pip install surface-installer
 
-This is the preferred method to install WeatherEye, as it will always install the most recent stable release.
+This is the preferred method to install `surface-installer`, as it will always install the most recent stable release.
 
 If you don't have `pip`_ installed, this `Python installation guide`_ can guide
 you through the process.
@@ -26,19 +26,19 @@ you through the process.
 From sources
 ------------
 
-The sources for WeatherEye can be downloaded from the `Github repo`_.
+The sources for `surface-installer` can be downloaded from the `Github repo`_.
 
 You can either clone the public repository:
 
 .. code-block:: console
 
-    $ git clone git://github.com/isedwards/weathereye
+    $ git clone https://github.com/NMS-Belize/surface-installer.git
 
 Or download the `tarball`_:
 
 .. code-block:: console
 
-    $ curl -OJL https://github.com/isedwards/weathereye/tarball/master
+    $ curl -OJL https://github.com/NMS-Belize/surface-installer/tarball/master
 
 Once you have a copy of the source, you can install it with:
 
@@ -47,5 +47,5 @@ Once you have a copy of the source, you can install it with:
     $ python setup.py install
 
 
-.. _Github repo: https://github.com/isedwards/weathereye
-.. _tarball: https://github.com/isedwards/weathereye/tarball/master
+.. _Github repo: https://github.com/NMS-Belize/surface-installer.git
+.. _tarball: https://github.com/NMS-Belize/surface-installer/tarball/master

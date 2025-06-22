@@ -1,4 +1,4 @@
-Welcome to WeatherEye's documentation!
+Welcome to `surface-installer` documentation!
 ======================================
 
 .. toctree::

@@ -1,5 +1,5 @@
 ==========
-WeatherEye
+SURFACE INSTALLER
 ==========
 
 
@@ -15,7 +15,7 @@ WeatherEye
             :alt: Documentation Status
 
 
-WeatherEye Python Package and Command Line Interface (CLI)
+SURFACE INSTALLER Python Package and Command Line Interface (CLI) built on top of WeatherEye
 
 * Free software: MIT license
 * Documentation: https://docs.weathereye.org
@@ -38,34 +38,32 @@ Update and Upgrade Packages
     sudo apt update
     sudo apt upgrade
 
-Install pipx and reload the shell
+Install pip
 
 .. code-block::
 
-    sudo apt install pipx -y; pipx ensurepath; exec "$SHELL" -l
+    sudo apt install pip
 
-Install development version of weathereye
-
-.. code-block::
-
-    cd ~
-    git clone https://github.com/weather-eye/weathereye
-    pipx install ~/weathereye
-
-Run weathereye installer
+Install surface-installer
 
 .. code-block::
 
-    wx install
+    pip install surface-installer
+
+Run ``surface-installer``
+
+.. code-block::
+
+    surface install
 
 Features
 --------
 
-Currently, the weathereye command line tool is limited to:
+Currently, the ``surface-installer`` command line tool is limited to:
 
-* ``wx --help`` - List available available commands
+* ``surface --help`` - List available available commands
 
-* ``wx install`` - Launches a web application to select which ``weathereye`` related app to install and configure environment variables
+* ``surface install`` - Launches a web application to install SURFACE and configure environment variables
 
 
 Usage
