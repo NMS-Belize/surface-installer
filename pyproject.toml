@@ -47,9 +47,6 @@ Homepage = "https://github.com/NMS-Belize/surface-installer"
 surface-installer = "weathereye.cli:main"
 surface = "weathereye.cli:main"
 
-[tool.setuptools]
-packages = { find = {} }
-
 [tool.setuptools.packages.find]
 include = ["weathereye", "weathereye.*"]
 
