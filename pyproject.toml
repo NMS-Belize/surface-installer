@@ -32,7 +32,7 @@ classifiers = [
 
 dependencies = [
     "Click>=7.0",
-    "ansible==11.7.0",
+    "ansible",
     "ansible-runner==2.4.0",
     "django==4.1",
     "celery==5.5.3",

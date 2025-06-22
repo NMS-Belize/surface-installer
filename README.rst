@@ -26,7 +26,6 @@ Supported Operating Systems
 Linux
 
 * ``Ubuntu 22.04``
-* ``Ubuntu 24.04``
 
 
 Install
