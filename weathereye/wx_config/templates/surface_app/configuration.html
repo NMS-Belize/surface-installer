@@ -559,6 +559,10 @@
     </button>
   </div>
 
+  <h5 style="color: grey; position: fixed; bottom: 0; left: 0; z-index: 9999; margin: 8px; font-weight: 300; background-color: rgb(240, 240, 240); padding: 4px; border-radius: 5px;">
+      {{ APP_VERSION_LABEL }}
+  </h5>
+
   <script type="text/javascript">
     // Automatically populate surface_repo_path with users home directory only on local installs
     "{% if install_type != 'remote'  %}"

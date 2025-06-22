@@ -24,7 +24,7 @@ STATIC_DIR = BASE_DIR / 'static' # static DIR
 SECRET_KEY = 'django-insecure-5s(17$_#xt=q6y2g_4nf^6j^68*03d95qwvl3ibx51hr@j#cl5'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 
@@ -67,6 +67,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'core.context_processors.get_installer_version',
             ],
         },
     },
@@ -134,3 +135,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Celery settings
 CELERY_BROKER_URL = "redis://localhost:52377/0"
 CELERY_RESULT_BACKEND = "redis://localhost:52377/0"
+
+# app versions
+APP_VERSION = "v0.1.0"
+APP_VERSION_STAGE = "-Stable"
+APP_VERSION_LABEL = f"{APP_VERSION}{APP_VERSION_STAGE}"
