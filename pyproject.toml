@@ -11,6 +11,10 @@ requires-python = ">=3.6"
 license = { text = "MIT license" }
 authors = [
   { name = "Ian Edwards", email = "ian@myacorn.com" },
+  { name = "National Meteorological Service of Belize", email = "nmstechbz@gmail.com" },
+]
+maintainers = [
+  { name = "Ian Edwards", email = "ian@myacorn.com" },
   { name = "Jeremiah Hammond", email = "jeremiahhammond14@gmail.com" },
   { name = "National Meteorological Service of Belize", email = "nmstechbz@gmail.com" },
 ]
@@ -28,11 +32,11 @@ classifiers = [
 
 dependencies = [
     "Click>=7.0",
-    "ansible",
+    "ansible==11.7.0",
     "ansible-runner==2.4.0",
     "django==4.1",
-    "celery>=4.0",
-    "redis"
+    "celery==5.5.3",
+    "redis==6.2.0"
 ]
 
 [project.urls]
