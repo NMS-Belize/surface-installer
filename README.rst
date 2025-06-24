@@ -35,20 +35,19 @@ Update and Upgrade Packages
 
 .. code-block::
 
-    sudo apt update
-    sudo apt upgrade
+    sudo apt update; sudo apt upgrade
 
-Install pip
+Install pipx
 
 .. code-block::
 
-    sudo apt install pip
+    sudo apt install pipx; pipx ensurepath; source ~/.bashrc
 
 Install surface-installer
 
 .. code-block::
 
-    pip install surface-installer
+    pipx install surface-installer
 
 Run ``surface-installer``
 
