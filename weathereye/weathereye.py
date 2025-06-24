@@ -3,24 +3,22 @@ import os
 import site
 import getpass
 
-# # VENV not required WITH surface-installer
+# Path to your virtual environment
+venv_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))))
 
-# # Path to your virtual environment
-# venv_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))))
+# Path to venv activation script
+venv_activate = os.path.join(venv_path, 'bin', 'activate')
 
-# # Path to venv activation script
-# venv_activate = os.path.join(venv_path, 'bin', 'activate')
+# Set the VIRTUAL_ENV environment variable
+os.environ['VIRTUAL_ENV'] = venv_path
 
-# # Set the VIRTUAL_ENV environment variable
-# os.environ['VIRTUAL_ENV'] = venv_path
+# Add the virtual environment's site-packages to sys.path
+site_packages = os.path.join(venv_path, 'lib', 'python3.10', 'site-packages')
+site.addsitedir(site_packages)
 
-# # Add the virtual environment's site-packages to sys.path
-# site_packages = os.path.join(venv_path, 'lib', 'python3.10', 'site-packages')
-# site.addsitedir(site_packages)
-
-# # Add the virtual environment's bin directory to the PATH environment variable
-# bin_path = os.path.join(venv_path, 'bin')
-# os.environ['PATH'] = bin_path + os.pathsep + os.environ.get('PATH', '')
+# Add the virtual environment's bin directory to the PATH environment variable
+bin_path = os.path.join(venv_path, 'bin')
+os.environ['PATH'] = bin_path + os.pathsep + os.environ.get('PATH', '')
 
 
 import click
@@ -49,8 +47,8 @@ def wx_configuration(sudo_password):
         # configure web app playbook to django webapp folder path
         with open(playbook_extravars, 'w') as extravars_file:
             extravars_file.write(f'\ndjango_webapp_path: {webapp_project_path}')
-            # extravars_file.write(f'\nvenv_path: {venv_path}')
-            # extravars_file.write(f'\nvenv_activate: {venv_activate}')
+            extravars_file.write(f'\nvenv_path: {venv_path}')
+            extravars_file.write(f'\nvenv_activate: {venv_activate}')
 
         # sudo password required for django web app playbook executeion
         with open(sudo_password_path, 'w') as sudo_password_file:

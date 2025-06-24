@@ -108,21 +108,20 @@
       community.general.django_manage:
         command: resetdb
         project_path: "{{ django_webapp_path }}"
-        # virtualenv: "{{ venv_path }}"
+        virtualenv: "{{ venv_path }}"
 
   # starting configuration site
     - name: configuration site
       community.general.django_manage:
         command: runserver localhost:52376
         project_path: "{{ django_webapp_path }}"
-        # virtualenv: "{{ venv_path }}"
+        virtualenv: "{{ venv_path }}"
       async: 10800
       poll: 0
 
   # start celery worker
     - name: Start celery worker
-      # ansible.builtin.shell: . {{ venv_activate }} && python3 -m celery -A wx_config worker
-      ansible.builtin.shell: python3 -m celery -A wx_config worker
+      ansible.builtin.shell: . {{ venv_activate }} && python3 -m celery -A wx_config worker
       args:
         chdir: "{{ django_webapp_path }}"
       async: 10800

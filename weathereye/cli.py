@@ -20,28 +20,28 @@ def main(args=None):
 def install(sudo_password):
     """surface-installer install / configuration command"""
 
-    # # VENV CHECK WITH surface-installer
+    # VENV CHECK WITH surface-installer
 
-    # # path to pipx weathereye virtual environment
-    # venv_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))), 'bin', 'activate')
+    # path to pipx weathereye virtual environment
+    venv_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))), 'bin', 'activate')
 
-    # # check if weathereye venv is activated
-    # venv_name = 'weathereye'
+    # check if weathereye venv is activated
+    venv_name = 'weathereye'
 
-    # if 'VIRTUAL_ENV' in os.environ:
-    #     current_venv = os.path.basename(os.environ['VIRTUAL_ENV'])
-    #     if current_venv == venv_name:
-    #         click.echo(click.style(f"Using '{venv_name}' virtual environment!", fg='green'))
-    #     else:
-    #         click.echo(click.style(f"Warning: There is a problem with virtual environment: '{venv_name}'", fg='red'))
-    #         click.echo(click.style("\nAttention, Run the following command before installing any packages with weathereye!", fg='yellow'))
-    #         click.echo(click.style(f"source {venv_path}", fg='green'))
-    #         return False
-    # else:
-    #     click.echo(click.style(f"Warning: There is a problem with virtual environment: '{venv_name}'", fg='red'))
-    #     click.echo(click.style("\nAttention, Run the following command before installing any packages with weathereye!", fg='yellow'))
-    #     click.echo(click.style(f"source {venv_path}", fg='green'))
-    #     return False
+    if 'VIRTUAL_ENV' in os.environ:
+        current_venv = os.path.basename(os.environ['VIRTUAL_ENV'])
+        if current_venv == venv_name:
+            click.echo(click.style(f"Using '{venv_name}' virtual environment!", fg='green'))
+        else:
+            click.echo(click.style(f"Warning: There is a problem with virtual environment: '{venv_name}'", fg='red'))
+            click.echo(click.style("\nAttention, Run the following command before installing any packages with weathereye!", fg='yellow'))
+            click.echo(click.style(f"source {venv_path}", fg='green'))
+            return False
+    else:
+        click.echo(click.style(f"Warning: There is a problem with virtual environment: '{venv_name}'", fg='red'))
+        click.echo(click.style("\nAttention, Run the following command before installing any packages with weathereye!", fg='yellow'))
+        click.echo(click.style(f"source {venv_path}", fg='green'))
+        return False
     
     wx.wx_configuration(sudo_password) # begin wx configuration
     
