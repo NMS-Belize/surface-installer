@@ -26,7 +26,7 @@ def install(sudo_password):
     venv_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))), 'bin', 'activate')
 
     # check if weathereye venv is activated
-    venv_name = 'weathereye'
+    venv_name = 'surface-installer'
 
     if 'VIRTUAL_ENV' in os.environ:
         current_venv = os.path.basename(os.environ['VIRTUAL_ENV'])
@@ -34,12 +34,12 @@ def install(sudo_password):
             click.echo(click.style(f"Using '{venv_name}' virtual environment!", fg='green'))
         else:
             click.echo(click.style(f"Warning: There is a problem with virtual environment: '{venv_name}'", fg='red'))
-            click.echo(click.style("\nAttention, Run the following command before installing any packages with weathereye!", fg='yellow'))
+            click.echo(click.style("\nAttention, Run the following command before installing any packages with surface-installer!", fg='yellow'))
             click.echo(click.style(f"source {venv_path}", fg='green'))
             return False
     else:
         click.echo(click.style(f"Warning: There is a problem with virtual environment: '{venv_name}'", fg='red'))
-        click.echo(click.style("\nAttention, Run the following command before installing any packages with weathereye!", fg='yellow'))
+        click.echo(click.style("\nAttention, Run the following command before installing any packages with installer!", fg='yellow'))
         click.echo(click.style(f"source {venv_path}", fg='green'))
         return False
     
