@@ -14,11 +14,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
 // Show or hide the backup data file path input based on the "Start with Backup data" choice
 const backupDataPath = document.getElementById('backup-data-path');
+const globalsBackupDataPath = document.getElementById('globals-backup-data-path');
 const startWithBackupRadioButtons = document.querySelectorAll('input[name="with_data"]');
 
 // Set the initial visibility of the backup data file path based on the default value
 const initialBackupValue = document.querySelector('input[name="with_data"]:checked').value;
 backupDataPath.style.display = initialBackupValue === 'yes' ? 'block' : 'none';
+globalsBackupDataPath.style.display = initialBackupValue === 'yes' ? 'block' : 'none';
 
 
 // Add event listeners to radio buttons
@@ -26,8 +28,10 @@ startWithBackupRadioButtons.forEach(input => {
 input.addEventListener('change', function() {
     if (this.value === 'yes') {
     backupDataPath.style.display = 'block';
+    globalsBackupDataPath.style.display = 'block';
     } else {
     backupDataPath.style.display = 'none';
+    globalsBackupDataPath.style.display = 'none';
     }
 });
 });
@@ -234,24 +238,26 @@ if (currentTab == 6) {
 // copying form values to the summary page when the user gets to the summary page
 if (currentTab == 6) {
     const formFields = [{ id: 'surface_repo_path', summaryId: 'summary4' },
-                        { id: 'data_path', summaryId: 'summary5' },
-                        { id: 'admin', summaryId: 'summary6' },
-                        { id: 'admin_password', summaryId: 'summary7' },
-                        { id: 'admin_email', summaryId: 'summary8' },
-                        { id: 'map_latitude', summaryId: 'summary9' },
-                        { id: 'map_longitude', summaryId: 'summary10' },
-                        { id: 'map_zoom', summaryId: 'summary11' },
-                        { id: 'spatial_analysis_initial_latitude', summaryId: 'summary12' },
-                        { id: 'spatial_analysis_initial_longitude', summaryId: 'summary13' },
-                        { id: 'spatial_analysis_final_latitude', summaryId: 'summary14' },
-                        { id: 'spatial_analysis_final_longitude', summaryId: 'summary15' },
-                        { id: 'wis2box_topic_hierarchy', summaryId: 'summary16' },
-                        { id: 'wis2box_user_regional', summaryId: 'summary17' },
-                        { id: 'wis2box_password_regional', summaryId: 'summary18' },
-                        { id: 'wis2box_endpoint_regional', summaryId: 'summary19' },
-                        { id: 'wis2box_user_local', summaryId: 'summary20' },
-                        { id: 'wis2box_password_local', summaryId: 'summary21' },
-                        { id: 'wis2box_endpoint_local', summaryId: 'summary22' }
+                        { id: 'globals_data_path', summaryId: 'summary5' },
+                        { id: 'data_path', summaryId: 'summary6' },
+                        { id: 'admin', summaryId: 'summary7' },
+                        { id: 'admin_password', summaryId: 'summary8' },
+                        { id: 'admin_email', summaryId: 'summary9' },
+                        { id: 'map_latitude', summaryId: 'summary10' },
+                        { id: 'map_longitude', summaryId: 'summary11' },
+                        { id: 'map_zoom', summaryId: 'summary12' },
+                        { id: 'spatial_analysis_initial_latitude', summaryId: 'summary13' },
+                        { id: 'spatial_analysis_initial_longitude', summaryId: 'summary14' },
+                        { id: 'spatial_analysis_final_latitude', summaryId: 'summary15' },
+                        { id: 'spatial_analysis_final_longitude', summaryId: 'summary16' },
+                        { id: 'wis2box_topic_hierarchy', summaryId: 'summary17' },
+                        { id: 'surface_encryption_key', summaryId: 'summary18' },
+                        // { id: 'wis2box_user_regional', summaryId: 'summary19' },
+                        // { id: 'wis2box_password_regional', summaryId: 'summary20' },
+                        // { id: 'wis2box_endpoint_regional', summaryId: 'summary21' },
+                        // { id: 'wis2box_user_local', summaryId: 'summary22' },
+                        // { id: 'wis2box_password_local', summaryId: 'summary23' },
+                        // { id: 'wis2box_endpoint_local', summaryId: 'summary24' }
                     ];
 
     "{% if install_type == 'remote' %}"
@@ -269,6 +275,20 @@ if (currentTab == 6) {
     });
 }
 
+}
+
+function selectTab(tab_id) {
+    currentTab = tab_id;
+
+    if (currentTab == 3){
+    showTab(currentTab);
+    initializeMap();
+    } else if (currentTab == 4) {
+    showTab(currentTab);
+    initializeSpatialMap();
+    } else {
+    showTab(currentTab);
+    };
 }
 
 function nextTab() {

@@ -163,13 +163,13 @@
     <section>
       <div class="tab-container">
         <div class="tab-center">
-          <button class="tablinks" id="defaultOpen">Installation Details</button>
-          <button class="tablinks">Surface Admin</button>
-          <button class="tablinks">LRGS Details</button>
-          <button class="tablinks">Map Details</button>
-          <button class="tablinks">Spatial Analysis Details</button>
-          <button class="tablinks">WIS2BOX Setup</button>
-          <button class="tablinks">Summary</button>
+          <button class="tablinks" id="defaultOpen" onclick="selectTab(0)">Installation Details</button>
+          <button class="tablinks" onclick="selectTab(1)">Surface Admin</button>
+          <button class="tablinks" onclick="selectTab(2)">LRGS Details</button>
+          <button class="tablinks" onclick="selectTab(3)">Map Details</button>
+          <button class="tablinks" onclick="selectTab(4)">Spatial Analysis Details</button>
+          <button class="tablinks" onclick="selectTab(5)">WIS2BOX Setup</button>
+          <button class="tablinks" onclick="selectTab(6)">Summary</button>
         </div>
       </div>
       
@@ -201,7 +201,12 @@
             <label>{{ form.with_data.label }}</label>
             {{ form.with_data }}
           
-            <div class="form-group" id="backup-data-path" style="display:none;">
+            <div id="globals-backup-data-path" style="display:none;">
+              <label for="{{ form.globals_data_path.id_for_label }}"><span class="required"></span>{{ form.globals_data_path.label }}</label>
+              {{ form.globals_data_path }}
+            </div>
+
+            <div id="backup-data-path" style="display:none;">
               <label for="{{ form.data_path.id_for_label }}"><span class="required"></span>{{ form.data_path.label }}</label>
               {{ form.data_path }}
             </div>
@@ -444,104 +449,114 @@
             </div>
             
             <div class="summary-item">
-              <label for="{{ form.data_path.id_for_label }}">{{ form.data_path.label }}</label>
+              <label for="{{ form.globals_data_path.id_for_label }}">{{ form.globals_data_path.label }}</label>
               <input type="text" id="summary5" class="summary-input" value="" disabled>
             </div>
-
+            
             <div class="summary-item">
-              <label for="{{ form.admin.id_for_label }}"><span class="required"></span>{{ form.admin.label }}</label>
+              <label for="{{ form.data_path.id_for_label }}">{{ form.data_path.label }}</label>
               <input type="text" id="summary6" class="summary-input" value="" disabled>
             </div>
 
             <div class="summary-item">
-              <label for="{{ form.admin_password.id_for_label }}"><span class="required"></span>{{ form.admin_password.label }}</label>
+              <label for="{{ form.admin.id_for_label }}"><span class="required"></span>{{ form.admin.label }}</label>
               <input type="text" id="summary7" class="summary-input" value="" disabled>
+            </div>
+
+            <div class="summary-item">
+              <label for="{{ form.admin_password.id_for_label }}"><span class="required"></span>{{ form.admin_password.label }}</label>
+              <input type="text" id="summary8" class="summary-input" value="" disabled>
             </div>
             
             <div class="summary-item">
               <label for="{{ form.admin_email.id_for_label }}"><span class="required"></span>{{ form.admin_email.label }}</label>
-              <input type="text" id="summary8" class="summary-input" value="" disabled>
-            </div>
-
-            <div class="summary-item">
-              <label for="{{ form.map_latitude.id_for_label }}"><span class="required"></span>{{ form.map_latitude.label }}</label>
               <input type="text" id="summary9" class="summary-input" value="" disabled>
             </div>
 
             <div class="summary-item">
-              <label for="{{ form.map_longitude.id_for_label }}"><span class="required"></span>{{ form.map_longitude.label }}</label>
+              <label for="{{ form.map_latitude.id_for_label }}"><span class="required"></span>{{ form.map_latitude.label }}</label>
               <input type="text" id="summary10" class="summary-input" value="" disabled>
             </div>
 
             <div class="summary-item">
-              <label for="{{ form.map_zoom.id_for_label }}"><span class="required"></span>{{ form.map_zoom.label }}</label>
+              <label for="{{ form.map_longitude.id_for_label }}"><span class="required"></span>{{ form.map_longitude.label }}</label>
               <input type="text" id="summary11" class="summary-input" value="" disabled>
             </div>
 
             <div class="summary-item">
-              <label for="{{ form.spatial_analysis_initial_latitude.id_for_label }}"><span class="required"></span>{{ form.spatial_analysis_initial_latitude.label }}</label>
+              <label for="{{ form.map_zoom.id_for_label }}"><span class="required"></span>{{ form.map_zoom.label }}</label>
               <input type="text" id="summary12" class="summary-input" value="" disabled>
             </div>
 
             <div class="summary-item">
-              <label for="{{ form.spatial_analysis_initial_longitude.id_for_label }}"><span class="required"></span>{{ form.spatial_analysis_initial_longitude.label }}</label>
+              <label for="{{ form.spatial_analysis_initial_latitude.id_for_label }}"><span class="required"></span>{{ form.spatial_analysis_initial_latitude.label }}</label>
               <input type="text" id="summary13" class="summary-input" value="" disabled>
             </div>
 
             <div class="summary-item">
-              <label for="{{ form.spatial_analysis_final_latitude.id_for_label }}"><span class="required"></span>{{ form.spatial_analysis_final_latitude.label }}</label>
+              <label for="{{ form.spatial_analysis_initial_longitude.id_for_label }}"><span class="required"></span>{{ form.spatial_analysis_initial_longitude.label }}</label>
               <input type="text" id="summary14" class="summary-input" value="" disabled>
             </div>
 
             <div class="summary-item">
-              <label for="{{ form.spatial_analysis_final_longitude.id_for_label }}"><span class="required"></span>{{ form.spatial_analysis_final_longitude.label }}</label>
+              <label for="{{ form.spatial_analysis_final_latitude.id_for_label }}"><span class="required"></span>{{ form.spatial_analysis_final_latitude.label }}</label>
               <input type="text" id="summary15" class="summary-input" value="" disabled>
             </div>
 
             <div class="summary-item">
-              <label for="{{ form.wis2box_topic_hierarchy.id_for_label }}"><span class="required"></span>{{ form.wis2box_topic_hierarchy.label }}</label>
+              <label for="{{ form.spatial_analysis_final_longitude.id_for_label }}"><span class="required"></span>{{ form.spatial_analysis_final_longitude.label }}</label>
               <input type="text" id="summary16" class="summary-input" value="" disabled>
             </div>
 
             <div class="summary-item">
-              <label for="{{ form.surface_encryption_key.id_for_label }}"><span class="required"></span>{{ form.surface_encryption_key.label }}</label>
+              <label for="{{ form.wis2box_topic_hierarchy.id_for_label }}"><span class="required"></span>{{ form.wis2box_topic_hierarchy.label }}</label>
               <input type="text" id="summary17" class="summary-input" value="" disabled>
+            </div>
+
+            <div class="summary-item">
+              <label for="{{ form.surface_encryption_key.id_for_label }}"><span class="required"></span>{{ form.surface_encryption_key.label }}</label>
+              <input type="text" id="summary18" class="summary-input" value="" disabled>
             </div>
             
             <!-- <div class="summary-item">
               <label for="{{ form.wis2box_user_regional.id_for_label }}"><span></span>{{ form.wis2box_user_regional.label }}</label>
-              <input type="text" id="summary17" class="summary-input" value="" disabled>
-            </div>
-            
-            <div class="summary-item">
-              <label for="{{ form.wis2box_password_regional.id_for_label }}"><span></span>{{ form.wis2box_password_regional.label }}</label>
-              <input type="text" id="summary18" class="summary-input" value="" disabled>
-            </div>
-            
-            <div class="summary-item">
-              <label for="{{ form.wis2box_endpoint_regional.id_for_label }}"><span></span>{{ form.wis2box_endpoint_regional.label }}</label>
               <input type="text" id="summary19" class="summary-input" value="" disabled>
             </div>
             
             <div class="summary-item">
-              <label for="{{ form.wis2box_user_local.id_for_label }}"><span></span>{{ form.wis2box_user_local.label }}</label>
+              <label for="{{ form.wis2box_password_regional.id_for_label }}"><span></span>{{ form.wis2box_password_regional.label }}</label>
               <input type="text" id="summary20" class="summary-input" value="" disabled>
             </div>
             
             <div class="summary-item">
-              <label for="{{ form.wis2box_password_local.id_for_label }}"><span></span>{{ form.wis2box_password_local.label }}</label>
+              <label for="{{ form.wis2box_endpoint_regional.id_for_label }}"><span></span>{{ form.wis2box_endpoint_regional.label }}</label>
               <input type="text" id="summary21" class="summary-input" value="" disabled>
             </div>
             
             <div class="summary-item">
-              <label for="{{ form.wis2box_endpoint_local.id_for_label }}"><span></span>{{ form.wis2box_endpoint_local.label }}</label>
+              <label for="{{ form.wis2box_user_local.id_for_label }}"><span></span>{{ form.wis2box_user_local.label }}</label>
               <input type="text" id="summary22" class="summary-input" value="" disabled>
+            </div>
+            
+            <div class="summary-item">
+              <label for="{{ form.wis2box_password_local.id_for_label }}"><span></span>{{ form.wis2box_password_local.label }}</label>
+              <input type="text" id="summary23" class="summary-input" value="" disabled>
+            </div>
+            
+            <div class="summary-item">
+              <label for="{{ form.wis2box_endpoint_local.id_for_label }}"><span></span>{{ form.wis2box_endpoint_local.label }}</label>
+              <input type="text" id="summary24" class="summary-input" value="" disabled>
             </div>                         
             -->
 
           </div>
 
-          <p>Note: The form will not allow you to submit unless all required information is entered. Fields beginning with <span class="required"></span> are required and must be filled out!</p>
+          <p>
+            Note: The form will not allow you to submit unless all required information is entered. Fields beginning with 
+            <span class="required"></span> 
+            are required and must be filled out!
+          </p>
+
         </div>
 
         <div id="next-continue-btn" class="btn-continue">

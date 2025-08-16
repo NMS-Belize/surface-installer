@@ -42,10 +42,15 @@ class SurfaceConfigurationForm(forms.Form):
         initial='no',
         widget=forms.RadioSelect(attrs={'class': 'form-check-input',})
     )
-    data_path = forms.CharField(
-        label="Backup data file path on host machine:", 
+    globals_data_path = forms.CharField(
+        label="Globals backup dump file path on host machine:", 
         required=False, 
-        widget=forms.TextInput(attrs={'class': 'form-control',})
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder' : '(e.g. /path/to/globals/backup.sql.gz)'})
+    )
+    data_path = forms.CharField(
+        label="Backup dump file path on host machine:", 
+        required=False, 
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder' : '(e.g. /path/to/backup.sql.gz)'})
     )
     admin = forms.CharField(
         label="Admin Username:", 

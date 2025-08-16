@@ -62,9 +62,13 @@ def write_out_surface_variables(form):
 
         # write with_data
         vf.write(f'"with_data": "{form.cleaned_data["with_data"]}"\n')
-        # write data file path
+        # write globals data dump file path
+        vf.write(f'"globals_data_path": "{form.cleaned_data["globals_data_path"]}"\n')
+        # write globals data dump filename
+        vf.write(f'"globals_data_file_name": "{form.cleaned_data["globals_data_path"].strip("/").split("/")[-1]}"\n')
+        # write main data dump file path
         vf.write(f'"data_path": "{form.cleaned_data["data_path"]}"\n')
-        # write data filename
+        # write main data dump filename
         vf.write(f'"data_file_name": "{form.cleaned_data["data_path"].strip("/").split("/")[-1]}"\n')
         # write admin
         vf.write(f'"admin": "{form.cleaned_data["admin"].strip()}"\n')
@@ -179,7 +183,6 @@ def write_out_production_variables(form):
         prod.write(f'SURFACE_SECRET_ENCRYPTION_KEY={form.cleaned_data["surface_encryption_key"]}\n')
 
         prod.write(f'\nWIS2BOX_TOPIC_HIERARCHY={form.cleaned_data["wis2box_topic_hierarchy"]}\n')
-
 
 
 def write_out_host_connection_details(form, install_type):

@@ -14,7 +14,7 @@
             msg: This host system is currently not supported. See docs.weathereye.org for supported operating systems and distributions.
           # when: ansible_facts['distribution'] != "Ubuntu" or ansible_facts['distribution_version'] != "22.04"
           # allow ubuntu versions greater than or equal to 22.04
-          when: ansible_facts['distribution'] != "Ubuntu" or ansible_facts['distribution_version'] not in ["22.04", "24.04"]
+          when: ansible_facts['distribution'] != "Ubuntu" or ansible_facts['distribution_version'] not in ["20.04", "22.04", "24.04"]
 
 
 
@@ -37,6 +37,7 @@
               - git
               - python3-setuptools
               - openjdk-11-jdk
+              - gzip
             state: latest
 
         - name: Remove docker-ce
@@ -109,6 +110,20 @@
           ansible.builtin.copy:
             src: "{{ prod_env_path }}"
             dest: "{{ surface_repo_path }}api/"
+
+        - name: Decompress Globals Data Dump file
+          ansible.builtin.unarchive:
+            src: "{{ globals_data_path }}"
+            dest: "{{ globals_data_path }}"
+            remote_src: yes
+          when: with_data in ['yes', 'Yes', 'YES']
+
+        - name: Decompress Data Dump file (This may take a while...)
+          ansible.builtin.unarchive:
+            src: "{{ data_path }}"
+            dest: "{{ data_path }}"
+            remote_src: yes
+          when: with_data in ['yes', 'Yes', 'YES']
 
         - name: Ensure static directory permissions are correct
           ansible.builtin.command:
@@ -206,13 +221,20 @@
           ansible.builtin.shell: docker compose exec api bash load_initial_data.sh
           args:
             chdir: "{{ surface_repo_path }}"
-          when: with_data in ['no', 'No', 'NO']
+          when: with_data in ['no', 'No', 'NO'] 
 
-        - name: Start With Data (This may take a while...)
+        - name: Restore Globals Data Dump
+          ansible.builtin.shell: docker compose exec -T postgres psql -U dba -d surface_db < {{ globals_data_path }} > 
+          args:
+            chdir: "{{ surface_repo_path }}"
+          when: with_data in ['yes', 'Yes', 'YES']
+
+        - name: Restore Data Dump (This will take a while, DO NOT turn off your device...)
           ansible.builtin.shell: docker compose exec -T postgres psql -U dba -d surface_db < {{ data_path }}
           args:
             chdir: "{{ surface_repo_path }}"
-          when: with_data in ['yes', 'Yes', 'YES']     
+          when: with_data in ['yes', 'Yes', 'YES']
+
       become: false
 
 
