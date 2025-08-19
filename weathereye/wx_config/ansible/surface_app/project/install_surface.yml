@@ -111,18 +111,16 @@
             src: "{{ prod_env_path }}"
             dest: "{{ surface_repo_path }}api/"
 
-        - name: Decompress Globals Data Dump file
-          ansible.builtin.unarchive:
-            src: "{{ globals_data_path }}"
-            dest: "{{ globals_data_path }}"
-            remote_src: yes
+        - name: Create Dump files DIR
+          ansible.builtin.command: "mkdir {{ surface_repo_path }}backup_restore_dumps/"
           when: with_data in ['yes', 'Yes', 'YES']
 
-        - name: Decompress Data Dump file (This may take a while...)
-          ansible.builtin.unarchive:
-            src: "{{ data_path }}"
-            dest: "{{ data_path }}"
-            remote_src: yes
+        - name: Decompress and move Globals Data Dump file
+          ansible.builtin.shell: "gunzip -dc {{ globals_data_path }} > {{ surface_repo_path }}backup_restore_dumps/{{ globals_data_file_name }}"
+          when: with_data in ['yes', 'Yes', 'YES']
+
+        - name: Decompress and move Globals Data Dump file
+          ansible.builtin.shell: "gunzip -dc {{ data_path }} > {{ surface_repo_path }}backup_restore_dumps/{{ data_file_name }}"
           when: with_data in ['yes', 'Yes', 'YES']
 
         - name: Ensure static directory permissions are correct
@@ -206,7 +204,7 @@
     # Start containers and services
     - name: Start Docker services
       block:
-        - name: Creating and starting Docker services (This may take a while...)
+        - name: Creating and starting Docker services (This WILL take a while...)
           community.docker.docker_compose_v2:
             project_src: "{{ surface_repo_path }}"
             build: always
@@ -221,18 +219,31 @@
           ansible.builtin.shell: docker compose exec api bash load_initial_data.sh
           args:
             chdir: "{{ surface_repo_path }}"
-          when: with_data in ['no', 'No', 'NO'] 
+          when: with_data in ['no', 'No', 'NO']
 
-        - name: Restore Globals Data Dump
-          ansible.builtin.shell: docker compose exec -T postgres psql -U dba -d surface_db < {{ globals_data_path }} > 
-          args:
-            chdir: "{{ surface_repo_path }}"
-          when: with_data in ['yes', 'Yes', 'YES']
+        - name: Wait for Postgres readiness (socket)
+          community.docker.docker_container_exec:
+            container: surface-database
+            user: postgres
+            command: bash -lc 'pg_isready -h /var/run/postgresql -d surface_db -U dba'
+          register: pg_ready
+          retries: 30
+          delay: 2
+          until: pg_ready.rc == 0
+          when: with_data in ["yes","Yes","YES"]
 
-        - name: Restore Data Dump (This will take a while, DO NOT turn off your device...)
-          ansible.builtin.shell: docker compose exec -T postgres psql -U dba -d surface_db < {{ data_path }}
-          args:
-            chdir: "{{ surface_repo_path }}"
+        - name: Restore Globals Data Dump (socket)
+          community.docker.docker_container_exec:
+            container: surface-database
+            user: postgres
+            command: bash -lc 'psql -v ON_ERROR_STOP=0 -h /var/run/postgresql -U dba -d surface_db -f "/restore_dumps/{{ globals_data_file_name }}"'
+          when: with_data in ["yes","Yes","YES"]
+
+        - name: Restore Data Dump (This WILL take a while, DO NOT turn off your device...)
+          community.docker.docker_container_exec:
+            container: surface-database
+            user: postgres
+            command: bash -lc 'pg_restore -U dba -d surface_db --no-owner --jobs=4 --verbose /restore_dumps/{{ data_file_name }}'
           when: with_data in ['yes', 'Yes', 'YES']
 
       become: false
@@ -251,6 +262,8 @@
           ansible.builtin.shell: docker compose exec api sh -c "export DJANGO_SUPERUSER_USERNAME='{{ admin }}' && export DJANGO_SUPERUSER_EMAIL='{{ admin_email }}' && export DJANGO_SUPERUSER_PASSWORD='{{ admin_password }}' && python manage.py createsuperuser --noinput"
           args:
             chdir: "{{ surface_repo_path }}"
+          when: with_data in ['no', 'No', 'NO']
+
       become: false
 
 
@@ -276,14 +289,12 @@
               # ansible.builtin.shell: docker compose exec --user root api bash -c "chown -R surface /data"
               ansible.builtin.shell: |
                 docker compose exec --user root api bash -c "find /data -exec chown surface {} \;"
-
               args:
                 chdir: "{{ surface_repo_path }}"
 
             - name: Verify the surface dir
               # ansible.builtin.shell: docker compose exec --user root api bash -c "chown -R surface:surface /surface"
               ansible.builtin.shell: docker compose exec --user root api bash -c "find /surface -exec chown surface:surface {} \;"
-
               args:
                 chdir: "{{ surface_repo_path }}"
           become: false

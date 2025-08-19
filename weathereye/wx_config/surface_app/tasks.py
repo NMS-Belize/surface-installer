@@ -86,4 +86,3 @@ def remove_all_tasks():
     except Exception as e:
         print(f"Error during deletion: {e}")
         
-

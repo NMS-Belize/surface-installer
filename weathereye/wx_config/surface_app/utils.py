@@ -62,20 +62,38 @@ def write_out_surface_variables(form):
 
         # write with_data
         vf.write(f'"with_data": "{form.cleaned_data["with_data"]}"\n')
+
         # write globals data dump file path
         vf.write(f'"globals_data_path": "{form.cleaned_data["globals_data_path"]}"\n')
+        
         # write globals data dump filename
-        vf.write(f'"globals_data_file_name": "{form.cleaned_data["globals_data_path"].strip("/").split("/")[-1]}"\n')
+        globals_filename = form.cleaned_data["globals_data_path"].strip("/").split("/")[-1]
+
+        if globals_filename.endswith(".dump.gz"):
+            globals_filename = globals_filename[:-3]  # remove the .gz part
+
+        vf.write(f'"globals_data_file_name": "{globals_filename}"\n')
+        
         # write main data dump file path
         vf.write(f'"data_path": "{form.cleaned_data["data_path"]}"\n')
+        
         # write main data dump filename
-        vf.write(f'"data_file_name": "{form.cleaned_data["data_path"].strip("/").split("/")[-1]}"\n')
+        data_dump_filename = form.cleaned_data["data_path"].strip("/").split("/")[-1]
+
+        if data_dump_filename.endswith(".dump.gz"):
+            data_dump_filename = data_dump_filename[:-3]  # remove the .gz part
+
+        vf.write(f'"data_file_name": "{data_dump_filename}"\n')
+        
         # write admin
         vf.write(f'"admin": "{form.cleaned_data["admin"].strip()}"\n')
+        
         # write admin_email
         vf.write(f'"admin_email": "{form.cleaned_data["admin_email"].strip()}"\n')
+        
         # write admin_password
         vf.write(f'"admin_password": "{form.cleaned_data["admin_password"]}"\n')
+        
         # path to production.env file
         vf.write(f'"prod_env_path": "{prod_env_file_path}"\n')
 
