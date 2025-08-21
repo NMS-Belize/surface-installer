@@ -54,6 +54,9 @@ def write_out_surface_variables(form):
     with open(variable_file_path, 'w') as vf:
         vf.write('---\n')
 
+        # write with_data
+        vf.write(f'"with_data": "{form.cleaned_data["with_data"]}"\n')
+
         # write surface_repo_path
         surface_repo_path = form.cleaned_data['surface_repo_path'].strip()
         if surface_repo_path[-1] == "/":
