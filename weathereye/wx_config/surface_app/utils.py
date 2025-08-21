@@ -65,7 +65,7 @@ def write_out_surface_variables(form):
         ftp_host = form.cleaned_data['dump_ftp_host']
         ftp_port = form.cleaned_data['dump_ftp_port']
         ftp_username = form.cleaned_data['dump_ftp_username']
-        ftp_password = form.cleaned_data['surface_repo_password']
+        ftp_password = form.cleaned_data['dump_ftp_password']
         ftp_globals_data_dump = form.cleaned_data['dump_ftp_globals_dump_path']
         ftp_data_dump = form.cleaned_data['dump_ftp_dump_path']
         
@@ -110,7 +110,7 @@ def write_out_surface_variables(form):
             vf.write('"dump_via_ftp": "false"\n')
 
             ##########################################################################################
-            
+
             # write globals data dump file path
             vf.write(f'"globals_data_path": "{form.cleaned_data["globals_data_path"]}"\n')
             
