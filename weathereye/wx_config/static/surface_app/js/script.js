@@ -14,13 +14,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
 // Show or hide the backup data file path input based on the "Start with Backup data" choice
 const backupDataPath = document.getElementById('backup-data-path');
-const globalsBackupDataPath = document.getElementById('globals-backup-data-path');
 const startWithBackupRadioButtons = document.querySelectorAll('input[name="with_data"]');
 
 // Set the initial visibility of the backup data file path based on the default value
 const initialBackupValue = document.querySelector('input[name="with_data"]:checked').value;
 backupDataPath.style.display = initialBackupValue === 'yes' ? 'block' : 'none';
-globalsBackupDataPath.style.display = initialBackupValue === 'yes' ? 'block' : 'none';
 
 
 // Add event listeners to radio buttons
@@ -28,10 +26,8 @@ startWithBackupRadioButtons.forEach(input => {
 input.addEventListener('change', function() {
     if (this.value === 'yes') {
     backupDataPath.style.display = 'block';
-    globalsBackupDataPath.style.display = 'block';
     } else {
     backupDataPath.style.display = 'none';
-    globalsBackupDataPath.style.display = 'none';
     }
 });
 });

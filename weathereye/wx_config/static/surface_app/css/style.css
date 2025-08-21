@@ -472,3 +472,56 @@ body {
     background-color: black;
     color: white;
   }
+
+
+  /* Styling the Test FTP Connection container */
+  #test-connection-container {
+      margin-top: 20px; 
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center; /* Align items vertically centered */
+  }
+
+  /* Styling the Test FTP Connection button */
+  /* #test-ftp-button {
+      display: inline-block;
+      background-color: var(--button-bg);
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px; 
+      transition: background 0.15s;
+  }
+
+  #test-ftp-button:hover {
+      background-color: #609ab6;
+  } */
+
+  /* Styling for the result message */
+  #test-ftp-result {
+      display: inline-block;
+      margin-left: 10px;
+      font-weight: bold;
+  }
+
+  /* Spinner styling */
+  .ftp-spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(138, 138, 138, 0.3);
+      border-top: 3px solid #4d4d4d;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-left: 10px; /* Space between button and spinner */
+  }
+
+  @keyframes spin {
+      from {
+          transform: rotate(0deg);
+      }
+      to {
+          transform: rotate(360deg);
+      }
+  }

@@ -106,7 +106,7 @@
             transform: translateX(26px);
         }
 
-        .toggle-lrgs-container {
+        .toggle-btn-container {
           display: flex; 
           align-items: center; 
           justify-content: left;
@@ -178,38 +178,90 @@
 
         <div id="tab0" class="tabcontent">
           <div class="form-group">
-            {% if install_type == 'remote' %}
-              <label for="{{ form.host.id_for_label }}"><span class="required"></span>{{ form.host.label }}</label>
-              {{ form.host }}
+            <div class="form-group">
+              {% if install_type == 'remote' %}
+                <label for="{{ form.host.id_for_label }}"><span class="required"></span>{{ form.host.label }}</label>
+                {{ form.host }}
 
-              <label for="{{ form.remote_connect_password.id_for_label }}"><span class="required"></span>{{ form.remote_connect_password.label }}</label>
-              <div class="password-field">
-                {{ form.remote_connect_password }}
-                <span class="password-toggle-icon"><i class="fas fa-eye"> Show Password</i></span>
-              </div>
+                <label for="{{ form.remote_connect_password.id_for_label }}"><span class="required"></span>{{ form.remote_connect_password.label }}</label>
+                <div class="password-field">
+                  {{ form.remote_connect_password }}
+                  <span class="password-toggle-icon"><i class="fas fa-eye"> Show Password</i></span>
+                </div>
 
-              <label for="{{ form.root_password.id_for_label }}"><span class="required"></span>{{ form.root_password.label }}</label>
-              <div class="password-field">
-                {{ form.root_password }}
-                <span class="password-toggle-icon"><i class="fas fa-eye"> Show Password</i></span>
-              </div>
-            {% endif %}
+                <label for="{{ form.root_password.id_for_label }}"><span class="required"></span>{{ form.root_password.label }}</label>
+                <div class="password-field">
+                  {{ form.root_password }}
+                  <span class="password-toggle-icon"><i class="fas fa-eye"> Show Password</i></span>
+                </div>
+              {% endif %}
 
-            <label for="{{ form.surface_repo_path.id_for_label }}"><span class="required"></span>{{ form.surface_repo_path.label }}</label>
-            {{ form.surface_repo_path }}
-
-            <label>{{ form.with_data.label }}</label>
-            {{ form.with_data }}
-          
-            <div id="globals-backup-data-path" style="display:none;">
-              <label for="{{ form.globals_data_path.id_for_label }}"><span class="required"></span>{{ form.globals_data_path.label }}</label>
-              {{ form.globals_data_path }}
+              <label for="{{ form.surface_repo_path.id_for_label }}"><span class="required"></span>{{ form.surface_repo_path.label }}</label>
+              {{ form.surface_repo_path }}
             </div>
 
-            <div id="backup-data-path" style="display:none;">
-              <label for="{{ form.data_path.id_for_label }}"><span class="required"></span>{{ form.data_path.label }}</label>
-              {{ form.data_path }}
+            <div class="form-group">
+              <label>{{ form.with_data.label }}</label>
+              {{ form.with_data }}
             </div>
+
+            <div id="backup-data-path"  class="form-group" style="display:none;">
+              <!-- retrieve dump via ftp toggle -->
+              <div class="toggle-btn-container">
+                <label style="margin-right: 10px;">Retrieve via FTP</label>
+                <label class="switch">
+                  <input type="checkbox" id="toggle-ftp">
+                  <span class="slider"></span>
+                </label>
+              </div>
+            
+              <div id="manual-dump-details">
+                <label for="{{ form.globals_data_path.id_for_label }}"><span class="required"></span>{{ form.globals_data_path.label }}</label>
+                {{ form.globals_data_path }}
+      
+                <label for="{{ form.data_path.id_for_label }}"><span class="required"></span>{{ form.data_path.label }}</label>
+                {{ form.data_path }}
+              </div>
+
+              <div id="ftp-details" style="display:none;">
+                <p> 
+                  <strong>Note:</strong>
+
+                  "Test the Connection" by clicking the button below before saving. This will prevent any errors retrieving the dump files.
+                </p>
+
+                <label for="{{ form.dump_ftp_host.id_for_label }}"><span class="required"></span>{{ form.dump_ftp_host.label }}</label>
+                {{ form.dump_ftp_host }}
+
+                <label for="{{ form.dump_ftp_port.id_for_label }}"><span class="required"></span>{{ form.dump_ftp_port.label }}</label>
+                {{ form.dump_ftp_port }}
+
+                <label for="{{ form.dump_ftp_username.id_for_label }}"><span class="required"></span>{{ form.dump_ftp_username.label }}</label>
+                {{ form.dump_ftp_username }}
+
+                <label for="{{ form.dump_ftp_password.id_for_label }}"><span class="required"></span>{{ form.dump_ftp_password.label }}</label>
+                <div class="password-field">
+                  {{ form.dump_ftp_password }}
+                  <span class="password-toggle-icon"><i class="fas fa-eye"> Show Password</i></span>
+                </div>
+
+                <label for="{{ form.dump_ftp_globals_dump_path.id_for_label }}"><span class="required"></span>{{ form.dump_ftp_globals_dump_path.label }}</label>
+                {{ form.dump_ftp_globals_dump_path }}
+                
+                <label for="{{ form.dump_ftp_dump_path.id_for_label }}"><span class="required"></span>{{ form.dump_ftp_dump_path.label }}</label>
+                {{ form.dump_ftp_dump_path }}
+
+                <div id="test-connection-container">
+                  <button type="button" id="test-ftp-button" class="btn btn-submit">Test FTP Connection</button>
+
+                  <div class="ftp-spinner" style="display: none;"></div> <!-- Initially hidden spinner -->
+
+                  <p id="test-ftp-result"></p>  <!-- Placeholder for the result -->
+                </div>
+              </div>
+
+            </div>
+
           </div>
         </div>
         
@@ -244,7 +296,7 @@
             </p>
 
             <!-- The toggle button -->
-            <div class="toggle-lrgs-container">
+            <div class="toggle-btn-container">
               <label style="font-size: 20px; margin-right: 10px;">Enable LRGS</label>
               <label class="switch">
                 <input type="checkbox" id="toggle-lrgs">
@@ -614,6 +666,20 @@
             }
         });
 
+        // JavaScript to toggle visibility of the retrieve dump via FTP div
+        document.getElementById("toggle-ftp").addEventListener("change", function() {
+            var FTPdetailsDiv = document.getElementById("ftp-details");
+            var ManDetailsDiv = document.getElementById("manual-dump-details");
+
+            if (this.checked) {
+                FTPdetailsDiv.style.display = "block";
+                ManDetailsDiv.style.display = "none";
+            } else {
+                FTPdetailsDiv.style.display = "none";
+                ManDetailsDiv.style.display = "block";
+            }
+        });
+
         // // JavaScript to toggle visibility of the regional wis2 details div
         // document.getElementById("toggle-regional-wis2").addEventListener("change", function() {
         //     var detailsDiv = document.getElementById("regional-wis2");
@@ -648,6 +714,48 @@
           })
           .catch(error => console.error("Error fetching encryption key:", error));
         }
+
+        // test the ftp connection to make sure the file exists on the ftp server
+        document.addEventListener("DOMContentLoaded", () => {
+            const button = document.getElementById("test-ftp-button");
+            const result = document.getElementById("test-ftp-result");
+            const spinner = document.querySelector(".ftp-spinner");
+
+            button.addEventListener("click", () => {
+                // Hide result and show spinner
+                result.style.display = "none";
+                spinner.style.display = "inline-block";
+
+                // Gather form data
+                const data = new FormData();
+                data.append("host", document.getElementById("id_dump_ftp_host").value);
+                data.append("port", document.getElementById("id_dump_ftp_port").value);
+                data.append("username", document.getElementById("id_dump_ftp_username").value);
+                data.append("password", document.getElementById("id_dump_ftp_password").value);
+                data.append("globals_dump_path", document.getElementById("id_dump_ftp_globals_dump_path").value);
+                data.append("dump_path", document.getElementById("id_dump_ftp_dump_path").value);
+                data.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+
+                // Send request
+                fetch("test-ftp/", {
+                    method: "POST",
+                    body: data,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    spinner.style.display = "none";
+                    result.textContent = data.message;
+                    result.style.color = data.status === "success" ? "green" : "red";
+                    result.style.display = "block";
+                })
+                .catch(() => {
+                    spinner.style.display = "none";
+                    result.textContent = "An error occurred";
+                    result.style.color = "red";
+                    result.style.display = "block";
+                });
+            });
+        });
 
   </script>
 

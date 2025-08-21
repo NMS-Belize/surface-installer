@@ -53,6 +53,7 @@ def write_out_surface_variables(form):
     # write out surface variables
     with open(variable_file_path, 'w') as vf:
         vf.write('---\n')
+
         # write surface_repo_path
         surface_repo_path = form.cleaned_data['surface_repo_path'].strip()
         if surface_repo_path[-1] == "/":
@@ -60,30 +61,79 @@ def write_out_surface_variables(form):
         else:
             vf.write(f'"surface_repo_path": "{surface_repo_path}/surface/"\n')
 
-        # write with_data
-        vf.write(f'"with_data": "{form.cleaned_data["with_data"]}"\n')
-
-        # write globals data dump file path
-        vf.write(f'"globals_data_path": "{form.cleaned_data["globals_data_path"]}"\n')
+        # get dumps via ftp
+        ftp_host = form.cleaned_data['dump_ftp_host']
+        ftp_port = form.cleaned_data['dump_ftp_port']
+        ftp_username = form.cleaned_data['dump_ftp_username']
+        ftp_password = form.cleaned_data['surface_repo_password']
+        ftp_globals_data_dump = form.cleaned_data['dump_ftp_globals_dump_path']
+        ftp_data_dump = form.cleaned_data['dump_ftp_dump_path']
         
-        # write globals data dump filename
-        globals_filename = form.cleaned_data["globals_data_path"].strip("/").split("/")[-1]
+        if ftp_host and ftp_port and ftp_username and ftp_password and ftp_globals_data_dump and ftp_data_dump:
+            vf.write('"dump_via_ftp": "true"\n')
 
-        if globals_filename.endswith(".dump.gz"):
-            globals_filename = globals_filename[:-3]  # remove the .gz part
+            vf.write(f'"ftp_host": "{ftp_host}"\n')
+            vf.write(f'"ftp_port": "{ftp_port}"\n')
+            vf.write(f'"ftp_username": "{ftp_username}"\n')
+            vf.write(f'"ftp_password": "{ftp_password}"\n')
 
-        vf.write(f'"globals_data_file_name": "{globals_filename}"\n')
-        
-        # write main data dump file path
-        vf.write(f'"data_path": "{form.cleaned_data["data_path"]}"\n')
-        
-        # write main data dump filename
-        data_dump_filename = form.cleaned_data["data_path"].strip("/").split("/")[-1]
+            vf.write(f'"ftp_globals_data_dump": "{ftp_globals_data_dump}"\n')
+            vf.write(f'"ftp_data_dump": "{ftp_data_dump}"\n')
 
-        if data_dump_filename.endswith(".dump.gz"):
-            data_dump_filename = data_dump_filename[:-3]  # remove the .gz part
+            ##########################################################################################
+            
+            # write globals data dump filename
+            globals_filename = ftp_globals_data_dump.strip("/").split("/")[-1]
 
-        vf.write(f'"data_file_name": "{data_dump_filename}"\n')
+            if globals_filename.endswith(".dump.gz"):
+                globals_filename = globals_filename[:-3]  # remove the .gz part
+
+            vf.write(f'"globals_data_file_name": "{globals_filename}"\n')
+
+            # write globals data dump file path
+            vf.write(f'"globals_data_path": "{surface_repo_path}/surface/{globals_filename}"\n')
+
+            ##########################################################################################
+
+            # write main data dump filename
+            data_dump_filename = ftp_data_dump.strip("/").split("/")[-1]
+
+            if data_dump_filename.endswith(".dump.gz"):
+                data_dump_filename = data_dump_filename[:-3]  # remove the .gz part
+
+            vf.write(f'"data_file_name": "{data_dump_filename}"\n')
+
+            # write main data dump file path
+            vf.write(f'"data_path": "{form.cleaned_data["data_path"]}"\n')
+
+        else:
+            vf.write('"dump_via_ftp": "false"\n')
+
+            ##########################################################################################
+            
+            # write globals data dump file path
+            vf.write(f'"globals_data_path": "{form.cleaned_data["globals_data_path"]}"\n')
+            
+            # write globals data dump filename
+            globals_filename = form.cleaned_data["globals_data_path"].strip("/").split("/")[-1]
+
+            if globals_filename.endswith(".dump.gz"):
+                globals_filename = globals_filename[:-3]  # remove the .gz part
+
+            vf.write(f'"globals_data_file_name": "{globals_filename}"\n')
+            
+            ##########################################################################################
+
+            # write main data dump file path
+            vf.write(f'"data_path": "{form.cleaned_data["data_path"]}"\n')
+            
+            # write main data dump filename
+            data_dump_filename = form.cleaned_data["data_path"].strip("/").split("/")[-1]
+
+            if data_dump_filename.endswith(".dump.gz"):
+                data_dump_filename = data_dump_filename[:-3]  # remove the .gz part
+
+            vf.write(f'"data_file_name": "{data_dump_filename}"\n')
         
         # write admin
         vf.write(f'"admin": "{form.cleaned_data["admin"].strip()}"\n')

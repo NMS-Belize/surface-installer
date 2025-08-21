@@ -11,7 +11,7 @@ class SurfaceConfigurationForm(forms.Form):
             self.fields['host'] = forms.CharField(
                 label="Remote Host for SURFACE install:", 
                 required=True, 
-                widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'eg.. username@xxx.xx.xxx.xx'})
+                widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': '(e.g. username@xxx.xxx.xxx.xxx)'})
             )
             self.fields['surface_repo_path'] = forms.CharField(
                 label="Path on remote machine to clone SURFACE repository:", 
@@ -123,6 +123,38 @@ class SurfaceConfigurationForm(forms.Form):
         label="Spatial Analysis Final Longitude:", 
         required=True, 
         widget=forms.TextInput(attrs={'class': 'form-control disabled-field',})
+    )
+
+    # retrieve dump via ftp forms
+    dump_ftp_host = forms.GenericIPAddressField(
+        label="FTP Host", 
+        required=False, 
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder' : '(e.g. xxx.xxx.xxx.xxx)'})
+    )
+    dump_ftp_port = forms.IntegerField(
+        label="Port:", 
+        required=False, 
+        widget=forms.NumberInput(attrs={'class': 'form-control'})
+    )
+    dump_ftp_username = forms.CharField(
+        label="Username:", 
+        required=False, 
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    dump_ftp_password = forms.CharField(
+        label="Password:", 
+        required=False, 
+        widget=forms.PasswordInput(attrs={'class': 'form-control'})
+    )
+    dump_ftp_globals_dump_path = forms.CharField(
+        label="Globals Dump Path on FTP:", 
+        required=False, 
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder' : '(e.g. /path/to/FTP/globals/backup.sql.gz)'})
+    )
+    dump_ftp_dump_path = forms.CharField(
+        label="Dump Path on FTP:", 
+        required=False, 
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder' : '(e.g. /path/to/FTP/backup.sql.gz)'})
     )
 
     # wis2box options

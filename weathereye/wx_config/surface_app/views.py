@@ -1,6 +1,7 @@
 import os
 import pwd
 from cryptography.fernet import Fernet
+from ftplib import FTP
 
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -87,3 +88,38 @@ def gen_encrypt_key(request):
 #     url = reverse('config-complete', kwargs={'task_id': task.id})
 
 #     return redirect(url) # Redirect to config_complete page
+
+
+# tests the ftp connection and returns the result
+def test_ftp_connection(request):
+    if request.method == "POST":
+        # Retrieve form data from the AJAX request
+        host = request.POST.get('host')
+        port = request.POST.get('port')
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        globals_data_dump = request.POST.get('globals_dump_path')
+        data_dump = request.POST.get('dump_path')
+
+        if not(host and port and username and password and globals_data_dump and data_dump):
+            return JsonResponse({"status": "error", "message": "Complete all fields before testing"})
+
+        # Validate and handle empty or invalid port values
+        try:
+            port = int(port)
+        except ValueError:
+            return JsonResponse({"status": "error", "message": "Invalid port value"})
+
+        # Try to establish an FTP connection
+        try:
+            ftp = FTP()
+            ftp.connect(host, port, timeout=10)
+            ftp.login(user=username, passwd=password)
+            ftp.size(globals_data_dump) #if the file size if gotten, then the files exist. Error otherwise
+            ftp.size(data_dump) # if the file size is gotten, then the files exists. Error otherwise
+            ftp.quit()
+            return JsonResponse({"status": "success", "message": "Connection successful!"})
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)})
+
+    return JsonResponse({"status": "error", "message": "Invalid request method"})
