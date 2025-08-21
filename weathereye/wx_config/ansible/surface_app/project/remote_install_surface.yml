@@ -99,6 +99,11 @@
             # version: development
             version: update/minor-updates
 
+        # wait 15 seconds for the previous instances to be brought dow and or dir removed 
+        - name: Clean up tasks;
+          ansible.builtin.pause:
+            seconds: 15
+
         - name: Remove example SUFACE config file (production.env.example)
           ansible.builtin.file:
             path: "{{ surface_repo_path }}api/production.env.example"

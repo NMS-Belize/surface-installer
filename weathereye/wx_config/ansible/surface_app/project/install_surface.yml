@@ -91,6 +91,11 @@
             state: absent
           become: false
 
+        # wait 15 seconds for the previous instances to be brought dow and or dir removed 
+        - name: Clean up tasks;
+          ansible.builtin.pause:
+            seconds: 15
+
         - name: Clone SURFACE Repository
           ansible.builtin.git:
             repo: https://github.com/opencdms/surface.git
