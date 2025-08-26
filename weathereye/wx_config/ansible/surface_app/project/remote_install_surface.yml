@@ -141,11 +141,11 @@
           when: (with_data in ['yes', 'Yes', 'YES']) and (dump_via_ftp in ['false', 'False', 'FALSE'])
 
         - name: Decompress and move Globals Data Dump file
-          ansible.builtin.shell: "gunzip -dc {{ globals_data_path }} > {{ surface_repo_path }}backup_restore_dumps/{{ globals_data_file_name }}"
+          ansible.builtin.shell: "gunzip -dc {{ surface_repo_path }}{{ globals_data_file_name }}.gz > {{ surface_repo_path }}backup_restore_dumps/{{ globals_data_file_name }}"
           when: with_data in ['yes', 'Yes', 'YES']
 
         - name: Decompress and move Globals Data Dump file
-          ansible.builtin.shell: "gunzip -dc {{ data_path }} > {{ surface_repo_path }}backup_restore_dumps/{{ data_file_name }}"
+          ansible.builtin.shell: "gunzip -dc {{ surface_repo_path }}{{ data_file_name }}.gz > {{ surface_repo_path }}backup_restore_dumps/{{ data_file_name }}"
           when: with_data in ['yes', 'Yes', 'YES']
 
         - name: Ensure static directory permissions are correct
