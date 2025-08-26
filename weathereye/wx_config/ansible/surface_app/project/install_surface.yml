@@ -38,6 +38,7 @@
               - python3-setuptools
               - openjdk-11-jdk
               - gzip
+              - wget
             state: latest
 
         - name: Remove docker-ce
@@ -91,11 +92,6 @@
             state: absent
           become: false
 
-        # wait 15 seconds for the previous instances to be brought dow and or dir removed 
-        - name: Clean up tasks;
-          ansible.builtin.pause:
-            seconds: 15
-
         - name: Clone SURFACE Repository
           ansible.builtin.git:
             repo: https://github.com/opencdms/surface.git
@@ -118,15 +114,17 @@
 
         - name: Retrieve globals data dump file from FTP server
           ansible.builtin.get_url:
-            url: "ftp://{{ ftp_username }}:{{ ftp_password }}@{{ ftp_host }}{{ ftp_globals_data_dump }}"
-            dest: "{{ surface_repo_path }}/{{ globals_data_file_name }}"
-          when: dump_via_ftp in ['yes', 'Yes', 'YES']
+            url: "ftp://{{ ftp_username }}:{{ ftp_password }}@{{ ftp_host }}:{{ ftp_port }}{{ ftp_globals_data_dump }}"
+            dest: "{{ surface_repo_path }}{{ globals_data_file_name }}.gz"
+            force: true
+          when: dump_via_ftp in ['true', 'True', 'TRUE']
 
         - name: Retrieve data dump file from FTP server
           ansible.builtin.get_url:
-            url: "ftp://{{ ftp_username }}:{{ ftp_password }}@{{ ftp_host }}{{ ftp_data_dump }}"
-            dest: "{{ surface_repo_path }}/{{ data_file_name }}"
-          when: dump_via_ftp in ['yes', 'Yes', 'YES']
+            url: "ftp://{{ ftp_username }}:{{ ftp_password }}@{{ ftp_host }}:{{ ftp_port }}{{ ftp_data_dump }}"
+            dest: "{{ surface_repo_path }}{{ data_file_name }}.gz"
+            force: true
+          when: dump_via_ftp in ['true', 'True', 'TRUE']
 
         - name: Create Dump files DIR
           ansible.builtin.command: "mkdir {{ surface_repo_path }}backup_restore_dumps/"

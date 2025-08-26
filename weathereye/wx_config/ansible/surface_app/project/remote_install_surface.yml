@@ -99,11 +99,6 @@
             # version: development
             version: update/minor-updates
 
-        # wait 15 seconds for the previous instances to be brought dow and or dir removed 
-        - name: Clean up tasks;
-          ansible.builtin.pause:
-            seconds: 15
-
         - name: Remove example SUFACE config file (production.env.example)
           ansible.builtin.file:
             path: "{{ surface_repo_path }}api/production.env.example"
@@ -115,20 +110,42 @@
             src: "{{ prod_env_path }}"
             dest: "{{ surface_repo_path }}api/"
 
+        - name: Retrieve globals data dump file from FTP server
+          ansible.builtin.get_url:
+            url: "ftp://{{ ftp_username }}:{{ ftp_password }}@{{ ftp_host }}:{{ ftp_port }}{{ ftp_globals_data_dump }}"
+            dest: "{{ surface_repo_path }}{{ globals_data_file_name }}.gz"
+            force: true
+          when: dump_via_ftp in ['true', 'True', 'TRUE']
+
+        - name: Retrieve data dump file from FTP server
+          ansible.builtin.get_url:
+            url: "ftp://{{ ftp_username }}:{{ ftp_password }}@{{ ftp_host }}:{{ ftp_port }}{{ ftp_data_dump }}"
+            dest: "{{ surface_repo_path }}{{ data_file_name }}.gz"
+            force: true
+          when: dump_via_ftp in ['true', 'True', 'TRUE']
+
         - name: Create Dump files DIR
           ansible.builtin.command: "mkdir {{ surface_repo_path }}backup_restore_dumps/"
           when: with_data in ['yes', 'Yes', 'YES']
 
+        - name: Transfer globals data dump file from host to remote machine
+          ansible.builtin.copy:
+            src: "{{ globals_data_path }}"
+            dest: "{{ surface_repo_path }}"
+          when: (with_data in ['yes', 'Yes', 'YES']) and (dump_via_ftp in ['false', 'False', 'FALSE'])
+
+        - name: Transfer data dump file from host to remote machine
+          ansible.builtin.copy:
+            src: "{{ data_path }}"
+            dest: "{{ surface_repo_path }}"
+          when: (with_data in ['yes', 'Yes', 'YES']) and (dump_via_ftp in ['false', 'False', 'FALSE'])
+
         - name: Decompress and move Globals Data Dump file
-          ansible.builtin.shell: "gunzip -dc {{ globals_data_file_name }}.gz > {{ surface_repo_path }}backup_restore_dumps/{{ globals_data_file_name }}"
-          args:
-            chdir: "{{ surface_repo_path }}"
+          ansible.builtin.shell: "gunzip -dc {{ globals_data_path }} > {{ surface_repo_path }}backup_restore_dumps/{{ globals_data_file_name }}"
           when: with_data in ['yes', 'Yes', 'YES']
 
         - name: Decompress and move Globals Data Dump file
-          ansible.builtin.shell: "gunzip -dc {{ data_file_name }}.gz > {{ surface_repo_path }}backup_restore_dumps/{{ data_file_name }}"
-          args:
-            chdir: "{{ surface_repo_path }}"
+          ansible.builtin.shell: "gunzip -dc {{ data_path }} > {{ surface_repo_path }}backup_restore_dumps/{{ data_file_name }}"
           when: with_data in ['yes', 'Yes', 'YES']
 
         - name: Ensure static directory permissions are correct

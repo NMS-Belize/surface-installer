@@ -94,7 +94,7 @@ def write_out_surface_variables(form):
             vf.write(f'"globals_data_file_name": "{globals_filename}"\n')
 
             # write globals data dump file path
-            vf.write(f'"globals_data_path": "{surface_repo_path}/surface/{globals_filename}"\n')
+            vf.write(f'"globals_data_path": "{surface_repo_path}/surface/{globals_filename}.gz"\n')
 
             ##########################################################################################
 
@@ -107,7 +107,7 @@ def write_out_surface_variables(form):
             vf.write(f'"data_file_name": "{data_dump_filename}"\n')
 
             # write main data dump file path
-            vf.write(f'"data_path": "{form.cleaned_data["data_path"]}"\n')
+            vf.write(f'"data_path": "{surface_repo_path}/surface/{data_dump_filename}.gz"\n')
 
         else:
             vf.write('"dump_via_ftp": "false"\n')
