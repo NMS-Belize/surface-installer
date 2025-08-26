@@ -144,7 +144,7 @@
           ansible.builtin.shell: "gunzip -dc {{ surface_repo_path }}{{ globals_data_file_name }}.gz > {{ surface_repo_path }}backup_restore_dumps/{{ globals_data_file_name }}"
           when: with_data in ['yes', 'Yes', 'YES']
 
-        - name: Decompress and move Globals Data Dump file
+        - name: Decompress and move Data Dump file
           ansible.builtin.shell: "gunzip -dc {{ surface_repo_path }}{{ data_file_name }}.gz > {{ surface_repo_path }}backup_restore_dumps/{{ data_file_name }}"
           when: with_data in ['yes', 'Yes', 'YES']
 
