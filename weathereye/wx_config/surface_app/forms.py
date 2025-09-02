@@ -42,11 +42,6 @@ class SurfaceConfigurationForm(forms.Form):
         initial='no',
         widget=forms.RadioSelect(attrs={'class': 'form-check-input',})
     )
-    globals_data_path = forms.CharField(
-        label="Globals backup dump file path on host machine:", 
-        required=False, 
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder' : '(e.g. /path/to/globals/backup.sql.gz)'})
-    )
     data_path = forms.CharField(
         label="Backup dump file path on host machine:", 
         required=False, 
@@ -145,11 +140,6 @@ class SurfaceConfigurationForm(forms.Form):
         label="Password:", 
         required=False, 
         widget=forms.PasswordInput(attrs={'class': 'form-control'})
-    )
-    dump_ftp_globals_dump_path = forms.CharField(
-        label="Globals Dump Path on FTP:", 
-        required=False, 
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder' : '(e.g. /path/to/FTP/globals/backup.sql.gz)'})
     )
     dump_ftp_dump_path = forms.CharField(
         label="Dump Path on FTP:", 

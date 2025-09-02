@@ -110,43 +110,22 @@
             src: "{{ prod_env_path }}"
             dest: "{{ surface_repo_path }}api/"
 
-        - name: Retrieve globals data dump file from FTP server
-          ansible.builtin.get_url:
-            url: "ftp://{{ ftp_username }}:{{ ftp_password }}@{{ ftp_host }}:{{ ftp_port }}{{ ftp_globals_data_dump }}"
-            dest: "{{ surface_repo_path }}{{ globals_data_file_name }}.gz"
-            force: true
-          when: dump_via_ftp in ['true', 'True', 'TRUE']
-
-        - name: Retrieve data dump file from FTP server
-          ansible.builtin.get_url:
-            url: "ftp://{{ ftp_username }}:{{ ftp_password }}@{{ ftp_host }}:{{ ftp_port }}{{ ftp_data_dump }}"
-            dest: "{{ surface_repo_path }}{{ data_file_name }}.gz"
-            force: true
-          when: dump_via_ftp in ['true', 'True', 'TRUE']
-
         - name: Create Dump files DIR
           ansible.builtin.command: "mkdir {{ surface_repo_path }}backup_restore_dumps/"
           when: with_data in ['yes', 'Yes', 'YES']
 
-        - name: Transfer globals data dump file from host to remote machine
-          ansible.builtin.copy:
-            src: "{{ globals_data_path }}"
-            dest: "{{ surface_repo_path }}"
-          when: (with_data in ['yes', 'Yes', 'YES']) and (dump_via_ftp in ['false', 'False', 'FALSE'])
+        - name: Retrieve data dump file from FTP server
+          ansible.builtin.get_url:
+            url: "ftp://{{ ftp_username }}:{{ ftp_password }}@{{ ftp_host }}:{{ ftp_port }}{{ ftp_data_dump }}"
+            dest: "{{ surface_repo_path }}backup_restore_dumps/{{ data_file_name }}"
+            force: true
+          when: dump_via_ftp in ['true', 'True', 'TRUE']
 
         - name: Transfer data dump file from host to remote machine
           ansible.builtin.copy:
             src: "{{ data_path }}"
-            dest: "{{ surface_repo_path }}"
+            dest: "{{ surface_repo_path }}backup_restore_dumps/"
           when: (with_data in ['yes', 'Yes', 'YES']) and (dump_via_ftp in ['false', 'False', 'FALSE'])
-
-        - name: Decompress and move Globals Data Dump file
-          ansible.builtin.shell: "gunzip -dc {{ surface_repo_path }}{{ globals_data_file_name }}.gz > {{ surface_repo_path }}backup_restore_dumps/{{ globals_data_file_name }}"
-          when: with_data in ['yes', 'Yes', 'YES']
-
-        - name: Decompress and move Data Dump file
-          ansible.builtin.shell: "gunzip -dc {{ surface_repo_path }}{{ data_file_name }}.gz > {{ surface_repo_path }}backup_restore_dumps/{{ data_file_name }}"
-          when: with_data in ['yes', 'Yes', 'YES']
 
         - name: Ensure static directory permissions are correct
           ansible.builtin.command:
@@ -229,7 +208,17 @@
     # Start containers and services
     - name: Start Docker services
       block:
-        - name: Creating and starting Docker services (This may take a while...)
+        - name: Prep for data dump restoration
+          ansible.builtin.shell: "mkdir -p data/postgresql/pgdata"
+          args:
+            chdir: "{{ surface_repo_path }}"
+          when: with_data in ['yes', 'Yes', 'YES']
+
+        - name: Restore data dump (This may take a while, DO NOT turn off your device...)
+          ansible.builtin.shell: "tar -xzf {{ surface_repo_path }}backup_restore_dumps/{{ data_file_name }} -C {{ surface_repo_path }}/data/postgresql/pgdata"
+          when: with_data in ['yes', 'Yes', 'YES']
+
+        - name: Creating and starting Postgres, Cache, Redis and Api services (This may take a while...)
           community.docker.docker_compose_v2:
             project_src: "{{ surface_repo_path }}"
             build: always
@@ -240,41 +229,18 @@
               - redis
               - api
 
+        - name: Confirm data dump restoration
+          ansible.builtin.shell: "docker compose exec -T postgres pg_isready"
+          args:
+            chdir: "{{ surface_repo_path }}"
+          when: with_data in ['yes', 'Yes', 'YES']
+
         - name: Start Without Data (This may take a while...)
           ansible.builtin.shell: docker compose exec api bash load_initial_data.sh
           args:
             chdir: "{{ surface_repo_path }}"
           when: with_data in ['no', 'No', 'NO']
 
-        - name: Wait for Postgres readiness (socket)
-          community.docker.docker_container_exec:
-            container: surface-database
-            user: postgres
-            command: bash -lc 'pg_isready -h /var/run/postgresql -d surface_db -U dba'
-          register: pg_ready
-          retries: 30
-          delay: 2
-          until: pg_ready.rc == 0
-          when: with_data in ["yes","Yes","YES"]
-
-        - name: Restore Globals Data Dump (socket)
-          community.docker.docker_container_exec:
-            container: surface-database
-            user: postgres
-            command: bash -lc 'psql -v ON_ERROR_STOP=0 -h /var/run/postgresql -U dba -d surface_db -f "/restore_dumps/{{ globals_data_file_name }}"'
-          when: with_data in ["yes","Yes","YES"]
-
-        - name: Restore Data Dump (This WILL take a while, DO NOT turn off your device...)
-          community.docker.docker_container_exec:
-            container: surface-database
-            user: postgres
-            command: bash -lc 'pg_restore -U dba -d surface_db --no-owner --jobs=4 --verbose /restore_dumps/{{ data_file_name }}'
-          when: with_data in ['yes', 'Yes', 'YES']
-
-        # - name: Remove data file
-        #   ansible.builtin.file:
-        #     path:
-        #     state:
       become: true
 
 
@@ -300,11 +266,11 @@
     # Restart all containers and services
     - name: Restart containers
       block:
-        - name: Stopping all containers
+        # Bringing down the Postgres, Cache, Redis and Api containers 
+        - name: Bringing down all containers
           community.docker.docker_compose_v2:
             project_src: "{{ surface_repo_path }}"
-            state: stopped
-
+            state: absent
 
         # Starting SURFACE
         - name: Starting up SURFACE
@@ -334,4 +300,5 @@
         - name: SURFACE installation complete!
           ansible.builtin.pause:
             seconds: 2
+
       become: true
