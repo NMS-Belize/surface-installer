@@ -98,8 +98,7 @@
             dest: "{{ surface_repo_path }}"
             force: true
             single_branch: true
-            # version: development
-            version: update/minor-updates
+            version: dev
 
         - name: Remove example SUFACE config file (production.env.example)
           ansible.builtin.file:
