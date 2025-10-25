@@ -229,6 +229,10 @@
               - redis
               - api
 
+        - name: Wait for containers to fully start
+          ansible.builtin.pause:
+            seconds: 30
+
         - name: Confirm data dump restoration
           ansible.builtin.shell: "docker compose exec -T postgres pg_isready"
           args:
