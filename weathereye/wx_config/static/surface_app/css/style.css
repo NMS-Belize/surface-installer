@@ -525,3 +525,9 @@ body {
           transform: rotate(360deg);
       }
   }
+
+  /* accent background for the surface installer */
+  .accent_background {
+    background: rgba(0, 123, 255, 0.1) !important;
+    background: linear-gradient(0deg, rgba(0, 123, 255, 0.25) 0%, rgba(255, 193, 7, 0.34) 100%) !important;
+  }
