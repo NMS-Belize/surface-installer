@@ -136,15 +136,12 @@
       align-items: center; 
       justify-content: left;
     }
-
-    #topical-hierarchy-wis2 {
-      margin-top: 40px;
-    }
     
   </style>
 </head>
 
-<body class="accent_background">
+<!-- <body class="accent_background"> -->
+<body>
   <div class="loader-container" id="loader-container">
     <div id="loader"></div>
   </div>
@@ -165,11 +162,9 @@
         <div class="tab-center">
           <button class="tablinks" id="defaultOpen" onclick="selectTab(0)">Installation Details</button>
           <button class="tablinks" onclick="selectTab(1)">Surface Admin</button>
-          <button class="tablinks" onclick="selectTab(2)">LRGS Details</button>
-          <button class="tablinks" onclick="selectTab(3)">Map Details</button>
-          <button class="tablinks" onclick="selectTab(4)">Spatial Analysis Details</button>
-          <button class="tablinks" onclick="selectTab(5)">WIS2BOX Setup</button>
-          <button class="tablinks" onclick="selectTab(6)">Summary</button>
+          <button class="tablinks" onclick="selectTab(2)">Country Details</button>
+          <button class="tablinks" onclick="selectTab(3)">LRGS Details</button>
+          <button class="tablinks" onclick="selectTab(4)">Summary</button>
         </div>
       </div>
       
@@ -275,7 +270,82 @@
           </div>
         </div>
 
+        <!-- Country Configurations -->
         <div id="tab2" class="tabcontent">
+
+          <div class="form-group">
+            <!-- Country selecter -->
+            <label for="{{ form.selected_country.id_for_label }}"><span class="required"></span>{{ form.selected_country.label }}</label>
+            {{ form.selected_country }}
+          </div>
+
+          <!-- country configuration main items -->
+          <div id="country_config">
+            <!-- topic heirarchy option -->
+            <label for="{{ form.wis2box_topic_hierarchy.id_for_label }}"><span class="required"></span>{{ form.wis2box_topic_hierarchy.label }}</label>
+            {{ form.wis2box_topic_hierarchy }}
+
+            <!-- encryption key section -->
+            <label for="{{ form.surface_encryption_key.id_for_label }}"><span class="required"></span>{{ form.surface_encryption_key.label }}</label>
+            {{ form.surface_encryption_key }}
+
+            <!-- Timezone name -->
+            <label for="{{ form.timezone_name.id_for_label }}"><span class="required"></span>{{ form.timezone_name.label }}</label>
+            {{ form.timezone_name }}
+
+            <!-- Timezone offset -->
+            <label for="{{ form.timezone_offset.id_for_label }}"><span class="required"></span>{{ form.timezone_offset.label }}</label>
+            {{ form.timezone_offset }}
+
+            <!-- Map Coords options -->
+            <div class="map-container" id="mapContainer">
+              <!-- overlay sits on top of the map -->
+              <div class="map-overlay" id="mapOverlay" aria-hidden="false" role="button" tabindex="0">
+              <div class="hint">Click to edit the map</div>
+              </div>
+
+
+              <!-- the map -->
+              <div id="initial-map"></div>
+
+
+              <!-- close button appears while editing so user can re-enable overlay -->
+              <button class="close-edit" id="closeEdit" aria-hidden="true" title="Close edit (re-enable overlay)">Close edit</button>
+            </div>
+            
+            <div class="form-group">
+              <!-- latitude option -->
+              <label for="{{ form.map_latitude.id_for_label }}"><span class="required"></span>{{ form.map_latitude.label }}</label>
+              {{ form.map_latitude }}
+
+              <!-- longitude option -->
+              <label for="{{ form.map_longitude.id_for_label }}"><span class="required"></span>{{ form.map_longitude.label }}</label>
+              {{ form.map_longitude }}
+
+              <!-- zoom option -->
+              <label for="{{ form.map_zoom.id_for_label }}"><span class="required"></span>{{ form.map_zoom.label }} (between 0 - 15)</label>
+              {{ form.map_zoom }}
+
+              <!-- spatial analysis initial lat -->
+              <label for="{{ form.spatial_analysis_initial_latitude.id_for_label }}"><span class="required"></span>{{ form.spatial_analysis_initial_latitude.label }}</label>
+              {{ form.spatial_analysis_initial_latitude }}
+
+              <!-- spatial analysis initial lng -->
+              <label for="{{ form.spatial_analysis_initial_longitude.id_for_label }}"><span class="required"></span>{{ form.spatial_analysis_initial_longitude.label }}</label>
+              {{ form.spatial_analysis_initial_longitude }}
+
+              <!-- spatial analysis final lat -->
+              <label for="{{ form.spatial_analysis_final_latitude.id_for_label }}"><span class="required"></span>{{ form.spatial_analysis_final_latitude.label }}</label>
+              {{ form.spatial_analysis_final_latitude }}
+
+              <!-- spatial analysis initial lng -->
+              <label for="{{ form.spatial_analysis_final_longitude.id_for_label }}"><span class="required"></span>{{ form.spatial_analysis_final_longitude.label }}</label>
+              {{ form.spatial_analysis_final_longitude }}
+            </div>
+          </div>
+        </div>
+
+        <div id="tab3" class="tabcontent">
           <div class="info-section">
             <label style="font-size: 20px;">Setup LRGS capabilities</label>
             <p>
@@ -333,142 +403,7 @@
           </div>
         </div>
 
-        <div id="tab3" class="tabcontent">
-          <div class="form-group">
-            <label for="{{ form.timezone_name.id_for_label }}"><span class="required"></span>{{ form.timezone_name.label }}</label>
-            {{ form.timezone_name }}
-
-            <label for="{{ form.timezone_offset.id_for_label }}"><span class="required"></span>{{ form.timezone_offset.label }}</label>
-            {{ form.timezone_offset }}
-          </div>
-
-
-          <label style="font-size: 20px;">Select your country's coordinates and zoom on the map</label>
-
-          <div id="initial-map"></div>
-          
-          <div class="form-group">
-            <label for="{{ form.map_latitude.id_for_label }}"><span class="required"></span>{{ form.map_latitude.label }}</label>
-            {{ form.map_latitude }}
-
-            <label for="{{ form.map_longitude.id_for_label }}"><span class="required"></span>{{ form.map_longitude.label }}</label>
-            {{ form.map_longitude }}
-
-            <label for="{{ form.map_zoom.id_for_label }}"><span class="required"></span>{{ form.map_zoom.label }} (between 0 - 15)</label>
-            {{ form.map_zoom }}
-          </div>
-        </div>
-
         <div id="tab4" class="tabcontent">
-          <label style="font-size: 20px;">Select your country's spatial analysis range</label>
-
-          <p>Click the square icon to draw your country's spatial analysis range.</p>
-          
-          <div id="spatial-map"></div>
-
-          <div class="form-group">
-            <label for="{{ form.spatial_analysis_initial_latitude.id_for_label }}"><span class="required"></span>{{ form.spatial_analysis_initial_latitude.label }}</label>
-            {{ form.spatial_analysis_initial_latitude }}
-
-            <label for="{{ form.spatial_analysis_initial_longitude.id_for_label }}"><span class="required"></span>{{ form.spatial_analysis_initial_longitude.label }}</label>
-            {{ form.spatial_analysis_initial_longitude }}
-
-            <label for="{{ form.spatial_analysis_final_latitude.id_for_label }}"><span class="required"></span>{{ form.spatial_analysis_final_latitude.label }}</label>
-            {{ form.spatial_analysis_final_latitude }}
-
-            <label for="{{ form.spatial_analysis_final_longitude.id_for_label }}"><span class="required"></span>{{ form.spatial_analysis_final_longitude.label }}</label>
-            {{ form.spatial_analysis_final_longitude }}
-          </div>
-        </div>
-
-        <div id="tab5" class="tabcontent">
-          <div class="info-section">
-            <label style="font-size: 20px;">Setup WIS2BOX</label>
-            <p>
-              WIS2 in a Box (wis2box) is a free and open-source tool that serves as a 
-              reference model for a WMO WIS2 Node. It provides an easy-to-use set of tools 
-              to collect, process, and share weather, climate, and water data using standardized 
-              methods aligned with WIS2 principles. Wis2box also allows access to all data within 
-              the WIS2 network and is designed to be accessible for data providers, offering essential 
-              tools and services for data discovery, access, and visualization
-            </p>
-          
-            <p>
-              <strong>Note:</strong> Ensure you select the correct topic hierarchy and setup the encryption key. 
-              <!-- You can apply for an LRGS account through the following organizations: -->
-            </p>
-
-            <!-- <p style="font-size: smaller;"> <span class="required"></span>These options are NOT required!</p> -->
-          
-          </div>
-
-          <div class="form-group" id="topical-hierarchy-wis2">
-            <label for="{{ form.wis2box_topic_hierarchy.id_for_label }}"><span class="required"></span>{{ form.wis2box_topic_hierarchy.label }}</label>
-            {{ form.wis2box_topic_hierarchy }}
-          </div>
-
-          <div class="form-group" id="surface-encryption-key">
-            <label for="{{ form.surface_encryption_key.id_for_label }}"><span class="required"></span>{{ form.surface_encryption_key.label }}</label>
-            {{ form.surface_encryption_key }}
-
-            <button type="button" class="btn btn-warning btn-generate" onclick="generateEncryptionKey()">Generate</button>
-
-          </div>
-
-          <!-- <button type="button" class="btn btn-warning btn-generate" onclick="">Generate</button> -->
-
-          <!-- The toggle buttons regional and local wis2 -->
-          <!-- <div class="toggle-wis2-container">
-            <div class="toggle-regional-wis2-container">
-              <label style="font-size: 20px; margin-right: 10px;">Regional WIS2BOX</label>
-              <label class="switch">
-                <input type="checkbox" id="toggle-regional-wis2">
-                <span class="slider"></span>
-              </label>
-            </div>
-
-            <div class="toggle-local-wis2-container">
-              <label style="font-size: 20px; margin-right: 10px;">Local WIS2BOX</label>
-              <label class="switch">
-                <input type="checkbox" id="toggle-local-wis2">
-                <span class="slider"></span>
-              </label>
-            </div>
-          </div> -->
-    
-          <!-- <div class="form-group" id="regional-wis2">
-            <label for="{{ form.wis2box_user_regional.id_for_label }}">{{ form.wis2box_user_regional.label }}</label>
-            {{ form.wis2box_user_regional }}
-
-            <label for="{{ form.wis2box_password_regional.id_for_label }}">{{ form.wis2box_password_regional.label }}</label>
-            <div class="password-field">
-              {{ form.wis2box_password_regional }}
-              <span class="password-toggle-icon" style="display: block;"><i class="fas fa-eye"> Show Password</i></span>
-            </div>
-
-            <label for="{{ form.wis2box_endpoint_regional.id_for_label }}">{{ form.wis2box_endpoint_regional.label }}</label>
-            {{ form.wis2box_endpoint_regional }}
-
-            <hr style="border: none; border-top: 3px solid #8e8e8eba; margin: 30px 0; border-radius: 10px; width: 100%;">
-          </div>
-
-          <div class="form-group" id="local-wis2">
-            <label for="{{ form.wis2box_user_local.id_for_label }}">{{ form.wis2box_user_local.label }}</label>
-            {{ form.wis2box_user_local }}
-
-            <label for="{{ form.wis2box_password_local.id_for_label }}">{{ form.wis2box_password_local.label }}</label>
-            <div class="password-field">
-              {{ form.wis2box_password_local }}
-              <span class="password-toggle-icon" style="display: block;"><i class="fas fa-eye"> Show Password</i></span>
-            </div>
-
-            <label for="{{ form.wis2box_endpoint_local.id_for_label }}">{{ form.wis2box_endpoint_local.label }}</label>
-            {{ form.wis2box_endpoint_local }}
-          </div> -->
-
-        </div>
-
-        <div id="tab6" class="tabcontent">
           <p class="dark-text">If satisfied with the configuration settings, click the 'Save Configuration' button to proceed.</p>
 
           <div class="summary-container">
@@ -644,106 +579,37 @@
     // Wait for the DOM content to fully load
     document.addEventListener('DOMContentLoaded', handleLoading);
 
+    // hide the country config items
+    document.addEventListener("DOMContentLoaded", () => {
 
-        // JavaScript to toggle visibility of the LRGS details div
-        document.getElementById("toggle-lrgs").addEventListener("change", function() {
-            var detailsDiv = document.getElementById("lrgs-details");
-            if (this.checked) {
-                detailsDiv.style.display = "block";
-            } else {
-                detailsDiv.style.display = "none";
+        // Get the <select> element using Django’s generated ID
+        const select = document.getElementById("{{ form.selected_country.id_for_label }}");
+
+        // Get the country_config div
+        const infoDiv = document.getElementById("country_config");
+
+        // Safety check (prevents console errors if elements not found)
+        if (!select || !infoDiv) return;
+
+        // Hide info div initially (if placeholder is selected)
+        infoDiv.style.display = select.value === '###' ? 'none' : 'block';
+
+        // Listen for user selecting something
+        select.addEventListener("change", () => {
+            // If current value is the empty placeholder -> hide the div
+            if (select.value === '###') {
+                infoDiv.style.display = 'none';
+                reset_populate_details() // reset the country details
+            }
+            // If user selected a real country -> show the div
+            else {
+              
+              infoDiv.style.display = 'block'; // displaty country details
+              
+              retrieve_populate_details(select.value) // retrieve and populate country details (passed in the iso3 code)
             }
         });
-
-        // JavaScript to toggle visibility of the retrieve dump via FTP div
-        document.getElementById("toggle-ftp").addEventListener("change", function() {
-            var FTPdetailsDiv = document.getElementById("ftp-details");
-            var ManDetailsDiv = document.getElementById("manual-dump-details");
-
-            if (this.checked) {
-                FTPdetailsDiv.style.display = "block";
-                ManDetailsDiv.style.display = "none";
-            } else {
-                FTPdetailsDiv.style.display = "none";
-                ManDetailsDiv.style.display = "block";
-            }
-        });
-
-        // // JavaScript to toggle visibility of the regional wis2 details div
-        // document.getElementById("toggle-regional-wis2").addEventListener("change", function() {
-        //     var detailsDiv = document.getElementById("regional-wis2");
-        //     if (this.checked) {
-        //         detailsDiv.style.display = "block";
-        //     } else {
-        //         detailsDiv.style.display = "none";
-        //     }
-        // });
-
-        // // JavaScript to toggle visibility of the regional wis2 details div
-        // document.getElementById("toggle-local-wis2").addEventListener("change", function() {
-        //     var detailsDiv = document.getElementById("local-wis2");
-        //     if (this.checked) {
-        //         detailsDiv.style.display = "block";
-        //     } else {
-        //         detailsDiv.style.display = "none";
-        //     }
-        // });
-
-
-        function generateEncryptionKey() {
-          fetch('gen-key/')
-          .then(response => response.json())
-          .then(data => {
-              if (data.key) {
-                  document.querySelector("#id_surface_encryption_key").value = data.key;
-                  document.querySelector("#summary17").value = data.key;
-              } else {
-                  alert("Failed to generate key.");
-              }
-          })
-          .catch(error => console.error("Error fetching encryption key:", error));
-        }
-
-        // test the ftp connection to make sure the file exists on the ftp server
-        document.addEventListener("DOMContentLoaded", () => {
-            const button = document.getElementById("test-ftp-button");
-            const result = document.getElementById("test-ftp-result");
-            const spinner = document.querySelector(".ftp-spinner");
-
-            button.addEventListener("click", () => {
-                // Hide result and show spinner
-                result.style.display = "none";
-                spinner.style.display = "inline-block";
-
-                // Gather form data
-                const data = new FormData();
-                data.append("host", document.getElementById("id_dump_ftp_host").value);
-                data.append("port", document.getElementById("id_dump_ftp_port").value);
-                data.append("username", document.getElementById("id_dump_ftp_username").value);
-                data.append("password", document.getElementById("id_dump_ftp_password").value);
-                data.append("dump_path", document.getElementById("id_dump_ftp_dump_path").value);
-                data.append("csrfmiddlewaretoken", "{{ csrf_token }}");
-
-                // Send request
-                fetch("test-ftp/", {
-                    method: "POST",
-                    body: data,
-                })
-                .then(response => response.json())
-                .then(data => {
-                    spinner.style.display = "none";
-                    result.textContent = data.message;
-                    result.style.color = data.status === "success" ? "green" : "red";
-                    result.style.display = "block";
-                })
-                .catch(() => {
-                    spinner.style.display = "none";
-                    result.textContent = "An error occurred";
-                    result.style.color = "red";
-                    result.style.display = "block";
-                });
-            });
-        });
+    });
 
   </script>
 

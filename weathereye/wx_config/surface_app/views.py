@@ -1,5 +1,6 @@
 import os
 import pwd
+import json
 from cryptography.fernet import Fernet
 from ftplib import FTP
 
@@ -75,10 +76,26 @@ def config_complete(request, task_id):
     else:
         return redirect(reverse('wx_configuration'))
     
-
+# generate encryption key
 def gen_encrypt_key(request):
     key = Fernet.generate_key().decode('utf-8')  # 44-char Base64 key
     return JsonResponse({"key": key})
+
+# retrieve country details
+def retr_country_details(request):
+    iso3_code = request.GET['iso3_code']
+    # open file containing the countries details
+    with open('./static/surface_app/spatial_analysis/spatial_analysis_coords.json', 'r', encoding='utf-8') as file:
+        # Pass the file object to json.load()
+        counties_details = json.load(file)
+
+    for detail in counties_details:
+        if detail['notation'] == iso3_code:
+            # return the country's detail
+            return JsonResponse(detail)
+    
+    # contry information not found
+    return JsonResponse({''}, status=404)
     
 
 # # retry configuration with the same env variables

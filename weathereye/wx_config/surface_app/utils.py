@@ -22,6 +22,9 @@ variable_file_path = os.path.join(project_dir, 'env', 'extravars',)
 # path to production.env file
 prod_env_file_path = os.path.join(project_dir, 'env', 'production.env',)
 
+# path to caribbean spatial analysis folder
+spatial_analysis_path = os.path.join(django_app_dir, 'static', 'surface_app', 'spatial_analysis')
+
 # path to remote hosts path
 hosts_file_path = os.path.join(project_dir, 'inventory', 'hosts')
 
@@ -115,6 +118,10 @@ def write_out_surface_variables(form):
         
         # path to production.env file
         vf.write(f'"prod_env_path": "{prod_env_file_path}"\n')
+
+        # write path to countries spatial analysis files
+        iso3_code = form.cleaned_data["selected_country"]
+        vf.write(f'"spatial_analysis_files_path": "{os.path.join(spatial_analysis_path, f"{iso3_code}_spatial_analysis")}"\n')
 
         # writing a variable called enable_lrgs as true if the user entered appropriate LRGS details
         lrgs_input_username = str(form.cleaned_data["lrgs_user"].strip())

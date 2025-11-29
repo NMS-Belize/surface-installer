@@ -277,13 +277,7 @@ body {
     margin-top: 0;
   }
 
-  /* map styles */
-  #initial-map { 
-    height: 55vh; 
-    border-radius: 10px;
-    margin-bottom: 1.5rem;
-  }
-
+  /* spatial analysis map styles */
   #spatial-map { 
     height: 55vh; 
     border-radius: 10px;
@@ -526,8 +520,90 @@ body {
       }
   }
 
-  /* accent background for the surface installer */
+  /* accent background for the surface installer
   .accent_background {
     background: rgba(0, 123, 255, 0.1) !important;
     background: linear-gradient(0deg, rgba(0, 123, 255, 0.25) 0%, rgba(255, 193, 7, 0.34) 100%) !important;
+  } */
+
+
+  /* Container */
+  .map-container { position: relative; width: 100%; margin-bottom: 1.5rem; z-index: 0; }
+
+
+  /* The actual map box (replace height as needed) */
+  #initial-map {height: 55vh; border-radius: 10px; overflow: hidden; position: relative; z-index: 1; }
+
+
+  /* Overlay that sits on top of the map */
+  .map-overlay {
+    position: absolute;
+    inset: 0; /* top:0; right:0; bottom:0; left:0 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(60, 56, 57, 0.264); /* light red tint so you can see it */
+    cursor: pointer;
+    transition: background-color .12s ease, opacity .12s ease;
+    z-index: 10000; /* very high to beat map internals */
+    pointer-events: auto;
+    border-radius: 10px;
+  }
+
+
+  /* The small message shown on hover */
+  .map-overlay .hint {
+    pointer-events: none; /* don't block hover -> overlay still captures clicks */
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: rgba(0,0,0,0.75);
+    color: white;
+    font-size: 14px;
+    transform: translateY(4px);
+    opacity: 0;
+    transition: opacity .12s ease, transform .12s ease;
+  }
+
+
+  /* Reveal the hint when hovering the overlay */
+  .map-overlay:hover .hint {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+
+  /* Floating close/edit button (visible only when editing) */
+  .close-edit {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10001 !important; /* even higher */
+    display: none; /* shown when editing */
+    font-family: inherit;
+    border: 0;
+    padding: 8px 10px;
+    border-radius: 6px;
+    background: rgba(0,0,0,0.75);
+    color: white;
+    cursor: pointer;
+    pointer-events: auto;
+  }
+
+
+  /* When the container has the .editing class we hide the overlay and show the close button */
+  .editing .map-overlay { display: none; }
+  .editing .close-edit { display: block; }
+
+  /* small visual indicator so users know they're in edit mode */
+  .editing #initial-map { outline: 3px dashed rgba(0, 0, 0, 0.26); }
+
+  /* Responsive tweaks */
+  @media (max-width: 420px) {
+    .map-overlay .hint { font-size: 13px; padding: 6px 10px }
+    .close-edit { padding: 6px 8px; }
+  }
+
+  /* Hide the info div until a country is selected */
+  #country_config {
+    display: none;
   }

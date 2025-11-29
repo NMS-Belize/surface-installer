@@ -111,6 +111,16 @@
             src: "{{ prod_env_path }}"
             dest: "{{ surface_repo_path }}api/"
 
+        - name: Add shape.png (spatial analysis)
+          ansible.builtin.copy:
+            src: "{{ spatial_analysis_files_path }}shape.png"
+            dest: "{{ surface_repo_path }}api/static/images/"
+
+        - name: Add Basemap.geojson (spatial analysis)
+          ansible.builtin.copy:
+            src: "{{ spatial_analysis_files_path }}Basemap.geojson"
+            dest: "{{ surface_repo_path }}api/static/"
+
         - name: Create Dump files DIR
           ansible.builtin.command: "mkdir {{ surface_repo_path }}backup_restore_dumps/"
           when: with_data in ['yes', 'Yes', 'YES']
