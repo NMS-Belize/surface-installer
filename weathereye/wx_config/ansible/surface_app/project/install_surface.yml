@@ -113,12 +113,12 @@
 
         - name: Add shape.png (spatial analysis)
           ansible.builtin.copy:
-            src: "{{ spatial_analysis_files_path }}shape.png"
+            src: "{{ spatial_analysis_files_path }}/shape.png"
             dest: "{{ surface_repo_path }}api/static/images/"
 
         - name: Add Basemap.geojson (spatial analysis)
           ansible.builtin.copy:
-            src: "{{ spatial_analysis_files_path }}Basemap.geojson"
+            src: "{{ spatial_analysis_files_path }}/Basemap.geojson"
             dest: "{{ surface_repo_path }}api/static/"
 
         - name: Create Dump files DIR
