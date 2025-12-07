@@ -141,6 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
     showTab(currentTab);
 });
 
+// logic to display the different tabs
 function showTab(n) {
     tabs.forEach((tab, index) => {
         tab.style.display = (index === n) ? 'block' : 'none';
@@ -156,17 +157,17 @@ function showTab(n) {
     var continueBtn = document.getElementById('next-continue-btn');
 
     if (currentTab == 0) {
-        continueBtn.classList.remove('next-btn');
-        continueBtn.classList.add('btn-continue');
+        continueBtn.classList.remove('next-btn-class');
+        continueBtn.classList.add('btn-continue-class');
     } else {
-        continueBtn.classList.remove('btn-continue');
-        continueBtn.classList.add('next-btn');
+        continueBtn.classList.remove('btn-continue-class');
+        continueBtn.classList.add('next-btn-class');
     }
 
     // Get all elements with the ID 'submit-btn'
     var submitBtn = document.getElementById('submitBtn');
 
-    if (currentTab == 4) {
+    if (currentTab == 4 && check_filled_fields()) {
         submitBtn.classList.remove('hide');
     } else {
         submitBtn.classList.add('hide');
@@ -176,7 +177,7 @@ function showTab(n) {
     if (currentTab == 4) {
         const formFields = [
                             { id: 'surface_repo_path', summaryId: 'summary4' },
-                            { id: 'data_path', summaryId: 'summary5' },
+                            // { id: 'data_path', summaryId: 'summary5' },
                             { id: 'admin', summaryId: 'summary6' },
                             { id: 'admin_password', summaryId: 'summary7' },
                             { id: 'admin_email', summaryId: 'summary8' },
@@ -189,24 +190,20 @@ function showTab(n) {
                             { id: 'spatial_analysis_final_longitude', summaryId: 'summary15' },
                             { id: 'wis2box_topic_hierarchy', summaryId: 'summary16' },
                             { id: 'surface_encryption_key', summaryId: 'summary17' },
-                            // { id: 'wis2box_user_regional', summaryId: 'summary18' },
-                            // { id: 'wis2box_password_regional', summaryId: 'summary19' },
-                            // { id: 'wis2box_endpoint_regional', summaryId: 'summary20' },
-                            // { id: 'wis2box_user_local', summaryId: 'summary21' },
-                            // { id: 'wis2box_password_local', summaryId: 'summary22' },
-                            // { id: 'wis2box_endpoint_local', summaryId: 'summary23' }
+                            { id: 'selected_country', summaryId: 'summary18' },
                         ];
 
-        "{% if install_type == 'remote' %}"
-            formFields.push(
-                            { id: 'host', summaryId: 'summary1' }, 
-                            { id: 'remote_connect_password', summaryId: 'summary2' }, 
-                            { id: 'root_password', summaryId: 'summary3' },
-                        )
-        "{% endif %}"
+        // "{% if install_type == 'remote' %}"
+        //     formFields.push(
+        //                     { id: 'host', summaryId: 'summary1' }, 
+        //                     { id: 'remote_connect_password', summaryId: 'summary2' }, 
+        //                     { id: 'root_password', summaryId: 'summary3' },
+        //                 )
+        // "{% endif %}"
 
         formFields.forEach(field => {
         const inputField = document.querySelector(`[name="${field.id}"]`);
+
         if (inputField) {
             document.getElementById(field.summaryId).value = inputField.value;
         }
@@ -215,38 +212,134 @@ function showTab(n) {
 
 }
 
+// facilitate clicking the tab headers to change tabs
 function selectTab(tab_id) {
     currentTab = tab_id;
 
-    if (currentTab == 3){
-        showTab(currentTab);
-    } else {
-        showTab(currentTab);
-    };
+    showTab(currentTab);
+
 }
 
+// control for the next button
 function nextTab() {
 if (currentTab < tabs.length - 1) {
     currentTab++;
 
-    if (currentTab == 3){
-        showTab(currentTab);
-    } else {
-        showTab(currentTab);
-    };
+    showTab(currentTab);
 }
 }
 
+// control for the previous button
 function prevTab() {
     if (currentTab > 0) {
         currentTab--;
 
-        if (currentTab == 3){
-            showTab(currentTab);
-        } else {
-            showTab(currentTab);
-        };
+        showTab(currentTab);
     }
+}
+
+// check form completion, if completed show the submit button
+function check_filled_fields() {
+    // reuquired entries
+    var surface_install_path_entry = document.querySelector("#id_surface_repo_path").value;
+    var encryption_key_entry = document.querySelector("#id_surface_encryption_key").value;
+    var admin_name_entry = document.querySelector("#id_admin").value;
+    var admin_email_entry = document.querySelector("#id_admin_email").value;
+    var admin_password_entry = document.querySelector("#id_admin_password").value;
+    var timezone_name_entry = document.querySelector("#id_timezone_name").value;
+    var timezone_offset_entry = document.querySelector("#id_timezone_offset").value;
+    var map_lat_entry = document.querySelector("#id_map_latitude").value;
+    var map_lng_entry = document.querySelector("#id_map_longitude").value;
+    var map_zoom_entry = document.querySelector("#zoomField").value;
+    var spatial_init_lat_entry = document.querySelector("#id_spatial_analysis_initial_latitude").value;
+    var spatial_init_lng_entry = document.querySelector("#id_spatial_analysis_initial_longitude").value;
+    var spatial_fin_lat_entry = document.querySelector("#id_spatial_analysis_final_latitude").value;
+    var spatial_fin_lng_entry = document.querySelector("#id_spatial_analysis_final_longitude").value;
+    var topic_hierarchy_entry = document.querySelector("#id_wis2box_topic_hierarchy").value;
+    var selected_country_entry = document.querySelector("#id_selected_country").value;
+    var lrgs_username_entry = document.querySelector("#id_lrgs_user").value;
+    var lrgs_password_entry = document.querySelector("#id_lrgs_password").value;
+
+    // remote install mandatory entries
+    var remote_host_entry = "";
+    var remote_host_password = "";
+    var remote_host_conn_password = ""
+    var remote_host_root_password = "";
+
+    // optional entries
+    var dump_file_path_entry = document.querySelector("#id_data_path").value;
+    var dump_ftp_host_entry = document.querySelector("#id_dump_ftp_host").value;
+    var dump_ftp_port_entry = document.querySelector("#id_dump_ftp_port").value;
+    var dump_ftp_username_entry = document.querySelector("#id_dump_ftp_username").value;
+    var dump_ftp_password_entry = document.querySelector("#id_dump_ftp_password").value;
+    var dump_ftp_dump_path_entry = document.querySelector("#id_dump_ftp_dump_path").value;
+    
+    // enable lrgs option
+    var enable_lrgs_toggle = document.getElementById("toggle-lrgs").checked;
+
+    // enable ftp pull option
+    var enable_ftp_toggle = document.getElementById("toggle-ftp").checked;
+
+    // local / remote install type option
+    var local_install = true;
+    if (document.querySelector("#id_host")) {
+        var local_install = false;
+
+        // remote install mandatory entries
+        var remote_host_entry = document.querySelector("#id_host").value;
+        var remote_host_conn_password = document.querySelector("#id_remote_connect_password").value;
+        var remote_host_root_password = document.querySelector("#id_root_password").value;
+    }
+
+    // backup data option
+    var backup_data_option = true;
+    if (document.querySelector(`input[name="with_data"]:checked`).value == "no") {
+        backup_data_option = false;
+    }
+
+
+    // Ensure all requred information is filled
+    if(encryption_key_entry && admin_name_entry && admin_email_entry && admin_password_entry && 
+        timezone_name_entry && timezone_offset_entry && map_lat_entry && map_lng_entry && 
+        map_zoom_entry && spatial_init_lat_entry && spatial_init_lng_entry && spatial_fin_lat_entry && 
+        spatial_fin_lng_entry && topic_hierarchy_entry && selected_country_entry && surface_install_path_entry ) 
+    {
+        // check if lrgs option has been enabled. If it has, confirm the lrgs user name and lrgs password are filled
+        if (enable_lrgs_toggle) {
+            if (!lrgs_username_entry || !lrgs_password_entry) {
+                return false;
+            }
+        }
+
+        // check unique remote install options, if remote install option has been selected.
+        if (!local_install) {
+            if (!remote_host_entry || !remote_host_conn_password || !remote_host_root_password) {
+
+                return false;
+   
+            }
+        }
+
+        // check for options related to the backup data options
+        if (backup_data_option && !enable_ftp_toggle) {
+            // check that the data path has been added if local install and backup data option has been set to "yes"
+            if (!dump_file_path_entry) {
+                return false
+            }
+        }
+
+        // check if ftp option has been enabled. If it has, confirm the ftp details
+        if (enable_ftp_toggle) {
+            if (!dump_ftp_host_entry || !dump_ftp_port_entry || !dump_ftp_username_entry || !dump_ftp_password_entry || !dump_ftp_dump_path_entry) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+
+    return false;
 }
 
 
@@ -257,6 +350,10 @@ document.getElementById("toggle-lrgs").addEventListener("change", function() {
         detailsDiv.style.display = "block";
     } else {
         detailsDiv.style.display = "none";
+
+        // reset the lrgs username and password when the option is disabled
+        document.querySelector("#id_lrgs_user").value = "";
+        document.querySelector("#id_lrgs_password").value = "";
     }
 });
 
@@ -269,9 +366,19 @@ document.getElementById("toggle-ftp").addEventListener("change", function() {
     if (this.checked) {
         FTPdetailsDiv.style.display = "block";
         ManDetailsDiv.style.display = "none";
+
+        // reset the data dump file option
+        document.querySelector("#id_data_path").value = "";
     } else {
         FTPdetailsDiv.style.display = "none";
         ManDetailsDiv.style.display = "block";
+
+        // reset the ftp details when the option is disabled
+        document.querySelector("#id_dump_ftp_host").value = "";
+        document.querySelector("#id_dump_ftp_port").value = "";
+        document.querySelector("#id_dump_ftp_username").value = "";
+        document.querySelector("#id_dump_ftp_password").value = "";
+        document.querySelector("#id_dump_ftp_dump_path").value = "";
     }
 });
 
@@ -283,7 +390,6 @@ function generateEncryptionKey() {
     .then(data => {
         if (data.key) {
             document.querySelector("#id_surface_encryption_key").value = data.key;
-            document.querySelector("#summary17").value = data.key;
         } else {
             alert("Failed to generate key.");
         }
@@ -296,7 +402,6 @@ function reset_populate_details() {
     // if the country selector is set to blank reset all country options
     // topic heirarchy
     document.querySelector("#id_wis2box_topic_hierarchy").value = '';
-    document.querySelector("#summary16").value = '';
 
     // timezone information
     document.querySelector("#id_timezone_name").value = '';
@@ -304,25 +409,14 @@ function reset_populate_details() {
 
     // map details
     document.querySelector("#id_map_latitude").value = '';
-    document.querySelector("#summary9").value = '';
     document.querySelector("#id_map_longitude").value = '';
-    document.querySelector("#summary10").value = '';
     document.querySelector("#zoomField").value = '';
-    document.querySelector("#summary11").value = '';
 
     // spatial analysis details
     document.querySelector("#id_spatial_analysis_initial_latitude").value = '';
-    document.querySelector("#summary12").value = '';
     document.querySelector("#id_spatial_analysis_initial_longitude").value = '';
-    document.querySelector("#summary13").value = '';
     document.querySelector("#id_spatial_analysis_final_latitude").value = '';
-    document.querySelector("#summary14").value = '';
     document.querySelector("#id_spatial_analysis_final_longitude").value = '';
-    document.querySelector("#summary15").value = '';
-
-    // the encryption key
-    document.querySelector("#id_surface_encryption_key").value = '';
-    document.querySelector("#summary17").value = '';
 }
 
 // Fxn to retrieve & fill country details country
@@ -333,7 +427,6 @@ function retrieve_populate_details(iso3_code) {
         if (data) {
             // set the topic heirarchy
             document.querySelector("#id_wis2box_topic_hierarchy").value = data.topic_hierarchy;
-            document.querySelector("#summary16").value = data.topic_hierarchy;
 
             // timezone information
             document.querySelector("#id_timezone_name").value = data.timezone_name;
@@ -341,24 +434,14 @@ function retrieve_populate_details(iso3_code) {
 
             // map details
             document.querySelector("#id_map_latitude").value = data.country_center_lat;
-            document.querySelector("#summary9").value = data.country_center_lat;
             document.querySelector("#id_map_longitude").value = data.country_center_lng;
-            document.querySelector("#summary10").value = data.country_center_lng;
             document.querySelector("#zoomField").value = parseInt(data.map_zoom);
-            document.querySelector("#summary11").value = parseInt(data.map_zoom);
 
             // spatial analysis details
             document.querySelector("#id_spatial_analysis_initial_latitude").value = data.spatial_analysis.INITIAL_LATITUDE;
-            document.querySelector("#summary12").value = data.spatial_analysis.INITIAL_LATITUDE;
             document.querySelector("#id_spatial_analysis_initial_longitude").value = data.spatial_analysis.INITIAL_LONGITUDE;
-            document.querySelector("#summary13").value = data.spatial_analysis.INITIAL_LONGITUDE;
             document.querySelector("#id_spatial_analysis_final_latitude").value = data.spatial_analysis.FINAL_LATITUDE;
-            document.querySelector("#summary14").value = data.spatial_analysis.FINAL_LATITUDE;
             document.querySelector("#id_spatial_analysis_final_longitude").value = data.spatial_analysis.FINAL_LONGITUDE;
-            document.querySelector("#summary15").value = data.spatial_analysis.FINAL_LONGITUDE;
-
-            // generate the encryption key
-            generateEncryptionKey()
 
             initializeMap(parseFloat(data.country_center_lat), parseFloat(data.country_center_lng), parseInt(data.map_zoom)); // re-initialeze the map with the updated data
 

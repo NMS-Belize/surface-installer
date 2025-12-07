@@ -12,49 +12,36 @@
     <link rel="icon" type="image/png" href="{% static 'surface_app/images/circle_logo_small.png' %}">
     <link rel="stylesheet" href="{% static 'surface_app/css/style.css' %}">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     
     <title>Configuration</title>
 
-    <style>
-        /* loading function */
-        .loader-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh; /* Full viewport height */
-        }
-
-        #loader {
-            border: 8px solid #f3f3f3; /* Light grey */
-            border-top: 8px solid #3498db; /* Blue */
-            border-radius: 50%;
-            width: 80px; /* Larger width */
-            height: 80px; /* Larger height */
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    </style>
 </head>
 <!-- <body class="accent_background"> -->
 <body>
+    <!-- Add the accent background -->
+    <div class="accent_background"></div>
+
+    <!-- loader spinner -->
     <div class="loader-container" id="loader-container">
         <div id="loader"></div>
     </div>
 
+    <!-- page content -->
     <div id="content">
-        <!-- Home button -->
-        <a href="{% url 'wx_configuration' %}" id="home-button" class="btn-primary"><i class="fas fa-home"></i></a>
-
-        <div class="logo"></div>
 
         <section>
-            <h1 class="success-h1">Configuration Successful!</h1>
+            <!-- Home button -->
+            <button class="home-button" onclick="goHome()">
+            <i class="fas fa-home"></i>
+            </button>
+
+            <!-- SURFACE Logo -->
+            <div class="logo"></div>
+
+            <!-- <h1 class="success-h1">Configuration Successful!</h1> -->
             <p class="success-p">Your SURFACE environment variables have been saved.</p>
         
             <h3>Surface Installation in Progress</h3>
@@ -85,12 +72,18 @@
 
             
         </section>
+
     </div>
 
-    <h5 style="color: grey; position: fixed; bottom: 0; left: 0; z-index: 9999; margin: 8px; font-weight: 300; background-color: rgb(240, 240, 240); padding: 4px; border-radius: 5px;">
+    <!-- Release Version -->
+    <div class="version-label">
+      <a href="#" style="padding: 0 16px; color: #1e90ff;">
+        <i id="version-icon" class="material-icons" style="color: #1e90ff;">info</i>
         {{ APP_VERSION_LABEL }}
-    </h5>
+      </a>
+    </div>
 
+    <!-- scripting information -->
     <script>
         // getting task output
         var task_id = "{{ task_id }}";
@@ -168,7 +161,7 @@
                                 progressBar.style.width = '100%';
                                 progressBar.style.backgroundColor = '#4caf50';
                                 progressBar.textContent = '100%';
-                                status.textContent = 'Installation Complete! SURFACE can now be accessed at http://0.0.0.0:8080/';
+                                status.textContent = 'Success! SURFACE is installed and running on port 8080. Access it via http://0.0.0.0:8080/ (or http://localhost:8080).';
                             } else if (progress <= 90) {
                                 percentage = Math.min(progress * 100 / 95, 100);
                                 progressBar.style.width = Math.floor(percentage) + '%';
@@ -252,6 +245,12 @@
         // Call scrollToBottom() when the page loads or when content changes
         document.addEventListener("DOMContentLoaded", scrollToBottom);
 
+        // redirect to the home page
+        function goHome() {
+            // Redirects the current window to Google's homepage
+            window.location.href = "{% url 'wx_configuration' %}";
+        }
     </script>
+
 </body>
 </html>

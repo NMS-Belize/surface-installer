@@ -1,620 +1,539 @@
 <!DOCTYPE html>
 {% load static %}
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-  <link rel="icon" type="image/png" href="{% static 'surface_app/images/circle_logo_small.png' %}">
-  <link rel="stylesheet" href="{% static 'surface_app/css/style.css' %}">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+    <link rel="icon" type="image/png" href="{% static 'surface_app/images/circle_logo_small.png' %}">
+    <link rel="stylesheet" href="{% static 'surface_app/css/style.css' %}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js"></script>
 
-  <title>Configure SURFACE Environment Variables</title>
+    <title>Configure Surface</title>
 
-  <style>
-    /* loading function */
-    .loader-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh; /* Full viewport height */
-    }
+  </head>
 
-    #loader {
-        border: 8px solid #f3f3f3; /* Light grey */
-        border-top: 8px solid #3498db; /* Blue */
-        border-radius: 50%;
-        width: 80px; /* Larger width */
-        height: 80px; /* Larger height */
-        animation: spin 1s linear infinite;
-    }
+  <!-- <body class="accent_background"> -->
+  <body>
+    <!-- Add the accent background -->
+    <div class="accent_background"></div>
 
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
+    <!-- loader spinner -->
+    <div class="loader-container" id="loader-container-id">
+      <div id="loader"></div>
+    </div>
 
-    /* LRGS button styling start */
-
-    #lrgs-details {
-      display: none; /* Hidden by default */
-    }
-    #regional-wis2 {
-      display: none; /* Hidden by default */
-    }
-    #local-wis2 {
-      display: none; /* Hidden by default */
-    }
-
-      /* Existing styles */
-        /* Toggle switch styling */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 34px;
-        }
-
-        /* Hide default HTML checkbox */
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        /* The slider */
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc; /* Default gray background when off */
-            transition: 0.4s;
-            border-radius: 34px;
-        }
-
-        /* Circle inside the slider */
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: 0.4s;
-            border-radius: 50%;
-        }
-
-        /* Change the background color when checked (on) */
-        input:checked + .slider {
-            background-color: #1e90ff;
-        }
-
-        /* Move the circle to the right when checked */
-        input:checked + .slider:before {
-            transform: translateX(26px);
-        }
-
-        .toggle-btn-container {
-          display: flex; 
-          align-items: center; 
-          justify-content: left;
-          margin-bottom: 10px;
-        }
-
-    /* LRGS button styling end */
-
-    /* wis2box config styling */
-    .toggle-regional-wis2-container {
-          display: flex; 
-          align-items: center; 
-          justify-content: left;
-          margin-bottom: 10px;
-        }
-
-    .toggle-local-wis2-container {
-          display: flex;
-          margin-left: 20px; 
-          align-items: center; 
-          justify-content: left;
-          margin-bottom: 10px;
-        }
-
-    .toggle-wis2-container {
-      display: flex; 
-      align-items: center; 
-      justify-content: left;
-    }
-    
-  </style>
-</head>
-
-<!-- <body class="accent_background"> -->
-<body>
-  <div class="loader-container" id="loader-container">
-    <div id="loader"></div>
-  </div>
-
-  <div id="content" class="hide">
-    <!-- Home button -->
-    <a href="{% url 'wx_configuration' %}" id="home-button" class="btn-primary"><i class="fas fa-home"></i></a>
-
-    <!-- Scroll to top button -->
-    <button onclick="scrollToBottom()" class="scroll-btn">
-      <i class="fas fa-chevron-down"></i>
-    </button>
-
-    <div class="logo"></div>
-    
-    <section>
-      <div class="tab-container">
-        <div class="tab-center">
-          <button class="tablinks" id="defaultOpen" onclick="selectTab(0)">Installation Details</button>
-          <button class="tablinks" onclick="selectTab(1)">Surface Admin</button>
-          <button class="tablinks" onclick="selectTab(2)">Country Details</button>
-          <button class="tablinks" onclick="selectTab(3)">LRGS Details</button>
-          <button class="tablinks" onclick="selectTab(4)">Summary</button>
-        </div>
-      </div>
+    <!-- page content -->
+    <div id="content" class="hide content-container">
+      <!-- Scroll to top button -->
+      <!-- <button onclick="scrollToBottom()" class="scroll-btn">
+        <i class="fas fa-chevron-down"></i>
+      </button> -->
       
-      <form method="post">
-        {% csrf_token %}
+      <section>
+        <!-- Home button -->
+        <button class="home-button" onclick="goHome()">
+          <i class="fas fa-home"></i>
+        </button>
 
-        <div id="tab0" class="tabcontent">
-          <div class="form-group">
-            <div class="form-group">
-              {% if install_type == 'remote' %}
-                <label for="{{ form.host.id_for_label }}"><span class="required"></span>{{ form.host.label }}</label>
-                {{ form.host }}
+        <!-- SURFACE Logo -->
+        <div class="logo"></div>
 
-                <label for="{{ form.remote_connect_password.id_for_label }}"><span class="required"></span>{{ form.remote_connect_password.label }}</label>
-                <div class="password-field">
-                  {{ form.remote_connect_password }}
-                  <span class="password-toggle-icon"><i class="fas fa-eye"> Show Password</i></span>
-                </div>
+        <!-- tab options -->
+        <div class="tab-container">
+          <div class="tab-center">
+            <button class="tablinks" id="defaultOpen" onclick="selectTab(0)">Installation & Startup</button>
+            <button class="tablinks" onclick="selectTab(1)">Admin Account & Security</button>
+            <button class="tablinks" onclick="selectTab(2)">Country Configuration</button>
+            <button class="tablinks" onclick="selectTab(3)">LRGS Access</button>
+            <button class="tablinks" onclick="selectTab(4)">Summary</button>
+          </div>
+        </div>
+        
+        <form method="post">
+          {% csrf_token %}
 
-                <label for="{{ form.root_password.id_for_label }}"><span class="required"></span>{{ form.root_password.label }}</label>
-                <div class="password-field">
-                  {{ form.root_password }}
-                  <span class="password-toggle-icon"><i class="fas fa-eye"> Show Password</i></span>
-                </div>
-              {% endif %}
-
-              <label for="{{ form.surface_repo_path.id_for_label }}"><span class="required"></span>{{ form.surface_repo_path.label }}</label>
-              {{ form.surface_repo_path }}
+          <!-- Installation Details -->
+          <div id="tab0" class="tabcontent">
+            <!-- info header -->
+            <div class="info-section">
+              <label style="font-size: 20px;">Installation & Startup Configuration</label>
+              <p>
+                Configure the installation settings required by the system. This includes specifying 
+                the installation path and selecting whether to initialize using backup data.
+              </p>
             </div>
 
             <div class="form-group">
-              <label>{{ form.with_data.label }}</label>
-              {{ form.with_data }}
+              <div class="form-group">
+                {% if install_type == 'remote' %}
+                  <label for="{{ form.host.id_for_label }}"><span class="required"></span>{{ form.host.label }}</label>
+                  {{ form.host }}
+
+                  <label for="{{ form.remote_connect_password.id_for_label }}"><span class="required"></span>{{ form.remote_connect_password.label }}</label>
+                  <div class="password-field">
+                    {{ form.remote_connect_password }}
+                    <span class="password-toggle-icon"><i class="fas fa-eye"> Show Password</i></span>
+                  </div>
+
+                  <label for="{{ form.root_password.id_for_label }}"><span class="required"></span>{{ form.root_password.label }}</label>
+                  <div class="password-field">
+                    {{ form.root_password }}
+                    <span class="password-toggle-icon"><i class="fas fa-eye"> Show Password</i></span>
+                  </div>
+                {% endif %}
+
+                <label for="{{ form.surface_repo_path.id_for_label }}"><span class="required"></span>{{ form.surface_repo_path.label }}</label>
+                {{ form.surface_repo_path }}
+              </div>
+
+              <div class="form-group">
+                <label>{{ form.with_data.label }}</label>
+                {{ form.with_data }}
+              </div>
+
+              <div id="backup-data-path"  class="form-group" style="display:none;">
+                <!-- retrieve dump via ftp toggle -->
+                <div class="toggle-btn-container">
+                  <label style="margin-right: 10px;">Retrieve via FTP</label>
+                  <label class="switch">
+                    <input type="checkbox" id="toggle-ftp">
+                    <span class="slider"></span>
+                  </label>
+                </div>
+              
+                <div id="manual-dump-details">
+                  <label for="{{ form.data_path.id_for_label }}"><span class="required"></span>{{ form.data_path.label }}</label>
+                  {{ form.data_path }}
+                </div>
+
+                <div id="ftp-details" style="display:none;">
+                  <p> 
+                    <strong>Note:</strong>
+
+                    "Test the Connection" by clicking the button below before saving. This will prevent any errors retrieving the dump files.
+                  </p>
+
+                  <label for="{{ form.dump_ftp_host.id_for_label }}"><span class="required"></span>{{ form.dump_ftp_host.label }}</label>
+                  {{ form.dump_ftp_host }}
+
+                  <label for="{{ form.dump_ftp_port.id_for_label }}"><span class="required"></span>{{ form.dump_ftp_port.label }}</label>
+                  {{ form.dump_ftp_port }}
+
+                  <label for="{{ form.dump_ftp_username.id_for_label }}"><span class="required"></span>{{ form.dump_ftp_username.label }}</label>
+                  {{ form.dump_ftp_username }}
+
+                  <label for="{{ form.dump_ftp_password.id_for_label }}"><span class="required"></span>{{ form.dump_ftp_password.label }}</label>
+                  <div class="password-field">
+                    {{ form.dump_ftp_password }}
+                    <span class="password-toggle-icon"><i class="fas fa-eye"> Show Password</i></span>
+                  </div>
+                  
+                  <label for="{{ form.dump_ftp_dump_path.id_for_label }}"><span class="required"></span>{{ form.dump_ftp_dump_path.label }}</label>
+                  {{ form.dump_ftp_dump_path }}
+
+                  <div id="test-connection-container">
+                    <button type="button" id="test-ftp-button" class="btn btn-submit">Test FTP Connection</button>
+
+                    <div class="ftp-spinner" style="display: none;"></div> <!-- Initially hidden spinner -->
+
+                    <p id="test-ftp-result"></p>  <!-- Placeholder for the result -->
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+          
+          <!-- SURFACE Admin Details -->
+          <div id="tab1" class="tabcontent">
+            <!-- info header -->
+            <div class="info-section">
+              <label style="font-size: 20px;">Administrative User & Security Setup</label>
+              <p>
+                Set up the administrative account and security configuration. Define the primary admin credentials 
+                (username, email, password) and generate a security key to secure system authentication and protect 
+                critical operations.
+              </p>
             </div>
 
-            <div id="backup-data-path"  class="form-group" style="display:none;">
-              <!-- retrieve dump via ftp toggle -->
+            <div class="form-group">
+              <!-- admin username -->
+              <label for="{{ form.admin.id_for_label }}"><span class="required"></span>{{ form.admin.label }}</label>
+              {{ form.admin }}
+
+              <!-- admin password -->
+              <label for="{{ form.admin_password.id_for_label }}"><span class="required"></span>{{ form.admin_password.label }}</label>
+              <div class="password-field">
+                {{ form.admin_password }} 
+                <span class="password-toggle-icon"><i class="fas fa-eye"> Show Password</i></span>
+              </div>
+              
+              <!-- admin email -->
+              <label for="{{ form.admin_email.id_for_label }}"><span class="required"></span>{{ form.admin_email.label }}</label>
+              {{ form.admin_email }}
+
+              <!-- Encryption key generate button -->
+              <label for="{{ form.surface_encryption_key.id_for_label }}"><span class="required"></span>{{ form.surface_encryption_key.label }}</label>
+              {{ form.surface_encryption_key }}
+
+              <button type="button" class="btn btn-warning btn-generate" onclick="generateEncryptionKey()">Generate</button>
+            </div>
+          </div>
+
+          <!-- Country Configurations -->
+          <div id="tab2" class="tabcontent">
+            <!-- info header -->
+            <div class="info-section">
+              <label style="font-size: 20px;">Country Selection & Map Configuration</label>
+              <p>
+                Choose a country to load its default settings. The system will automatically fill in the topic hierarchy, 
+                timezone information, and location details. You may adjust only the latitude, longitude, and zoom level as required
+                by clicking on the map.
+              </p>
+            </div>
+
+            <!-- Country selecter -->
+            <div class="form-group">
+              <label for="{{ form.selected_country.id_for_label }}"><span class="required"></span>{{ form.selected_country.label }}</label>
+              {{ form.selected_country }}
+            </div>
+
+            <!-- country configuration main items -->
+            <div id="country_config">
+              <!-- topic heirarchy option -->
+              <label for="{{ form.wis2box_topic_hierarchy.id_for_label }}"><span class="required"></span>{{ form.wis2box_topic_hierarchy.label }}</label>
+              {{ form.wis2box_topic_hierarchy }}
+
+              <!-- Timezone name -->
+              <label for="{{ form.timezone_name.id_for_label }}"><span class="required"></span>{{ form.timezone_name.label }}</label>
+              {{ form.timezone_name }}
+
+              <!-- Timezone offset -->
+              <label for="{{ form.timezone_offset.id_for_label }}"><span class="required"></span>{{ form.timezone_offset.label }}</label>
+              {{ form.timezone_offset }}
+
+              <!-- Map Coords options -->
+              <div class="map-container" id="mapContainer">
+                <!-- overlay sits on top of the map -->
+                <div class="map-overlay" id="mapOverlay" aria-hidden="false" role="button" tabindex="0">
+                <div class="hint">Click to edit the map</div>
+                </div>
+
+
+                <!-- the map -->
+                <div id="initial-map"></div>
+
+
+                <!-- close button appears while editing so user can re-enable overlay -->
+                <button class="close-edit" id="closeEdit" aria-hidden="true" title="Close edit (re-enable overlay)">Close edit</button>
+              </div>
+              
+              <div class="form-group">
+                <!-- latitude option -->
+                <label for="{{ form.map_latitude.id_for_label }}"><span class="required"></span>{{ form.map_latitude.label }}</label>
+                {{ form.map_latitude }}
+
+                <!-- longitude option -->
+                <label for="{{ form.map_longitude.id_for_label }}"><span class="required"></span>{{ form.map_longitude.label }}</label>
+                {{ form.map_longitude }}
+
+                <!-- zoom option -->
+                <label for="{{ form.map_zoom.id_for_label }}"><span class="required"></span>{{ form.map_zoom.label }} (between 0 - 15)</label>
+                {{ form.map_zoom }}
+
+                <!-- spatial analysis initial lat -->
+                <label for="{{ form.spatial_analysis_initial_latitude.id_for_label }}"><span class="required"></span>{{ form.spatial_analysis_initial_latitude.label }}</label>
+                {{ form.spatial_analysis_initial_latitude }}
+
+                <!-- spatial analysis initial lng -->
+                <label for="{{ form.spatial_analysis_initial_longitude.id_for_label }}"><span class="required"></span>{{ form.spatial_analysis_initial_longitude.label }}</label>
+                {{ form.spatial_analysis_initial_longitude }}
+
+                <!-- spatial analysis final lat -->
+                <label for="{{ form.spatial_analysis_final_latitude.id_for_label }}"><span class="required"></span>{{ form.spatial_analysis_final_latitude.label }}</label>
+                {{ form.spatial_analysis_final_latitude }}
+
+                <!-- spatial analysis initial lng -->
+                <label for="{{ form.spatial_analysis_final_longitude.id_for_label }}"><span class="required"></span>{{ form.spatial_analysis_final_longitude.label }}</label>
+                {{ form.spatial_analysis_final_longitude }}
+              </div>
+            </div>
+          </div>
+
+          <!-- LRGS Details -->
+          <div id="tab3" class="tabcontent">
+            <div class="info-section">
+              <label style="font-size: 20px;">Setup LRGS capabilities</label>
+              <p>
+                LRGS (Low-Rate Data Receiver System) is a system that enables the reception of messages from satellite stations, 
+                which is crucial for receiving and processing weather data. By configuring LRGS in SURFACE, you can ensure 
+                seamless communication with satellite stations.
+              </p>
+            
+              <p>
+                <strong>Note:</strong> Before enabling this option, it is recommended that you have an existing LRGS username and password. 
+                <!-- You can apply for an LRGS account through the following organizations: -->
+              </p>
+              
+              <!-- <ul>
+                <li>
+                  <strong>NOAA NESDIS (U.S.):</strong> Visit 
+                  <a href="https://www.nesdis.noaa.gov" target="_blank">NOAA NESDIS User Services</a> to request access to LRGS 
+                  services for satellite data reception.
+                </li>
+                <li>
+                  <strong>USGS EROS Center:</strong> Visit 
+                  <a href="https://eros.usgs.gov" target="_blank">USGS EROS</a> to explore satellite data reception services 
+                  and request an LRGS account.
+                </li>
+                <li>
+                  <strong>International Users:</strong> Contact the World Meteorological Organization (WMO) for satellite data access. 
+                  Visit <a href="https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-space-programme-wsp" target="_blank">WMO Satellite User Resources</a> 
+                  for more information.
+                </li>
+              </ul> -->
+
+
+              <!-- The toggle button -->
               <div class="toggle-btn-container">
-                <label style="margin-right: 10px;">Retrieve via FTP</label>
+                <label style="font-size: 20px; margin-right: 10px;">Enable LRGS</label>
                 <label class="switch">
-                  <input type="checkbox" id="toggle-ftp">
+                  <input type="checkbox" id="toggle-lrgs">
                   <span class="slider"></span>
                 </label>
               </div>
             
-              <div id="manual-dump-details">
-                <label for="{{ form.data_path.id_for_label }}"><span class="required"></span>{{ form.data_path.label }}</label>
-                {{ form.data_path }}
+            </div>
+      
+            <div class="form-group" id="lrgs-details">
+        
+              <label for="{{ form.lrgs_user.id_for_label }}"><span class="required"></span>{{ form.lrgs_user.label }}</label>
+              {{ form.lrgs_user }}
+
+              <label for="{{ form.lrgs_password.id_for_label }}"><span class="required"></span>{{ form.lrgs_password.label }}</label>
+              <div class="password-field">
+                {{ form.lrgs_password }}
+                <span class="password-toggle-icon"><i class="fas fa-eye"> Show Password</i></span>
               </div>
+            </div>
+          </div>
 
-              <div id="ftp-details" style="display:none;">
-                <p> 
-                  <strong>Note:</strong>
+          <!-- Summary -->
+          <div id="tab4" class="tabcontent">
+            <label style="font-size: 20px;">Configuration Summary</label>
+            <p>
+              If satisfied with the SURFACE configuration settings, click the 'Save Configuration' 
+              button to proceed.
 
-                  "Test the Connection" by clicking the button below before saving. This will prevent any errors retrieving the dump files.
-                </p>
+              <span class="required"></span>These values make up the production variables for 
+              this installation.
+            </p>
 
-                <label for="{{ form.dump_ftp_host.id_for_label }}"><span class="required"></span>{{ form.dump_ftp_host.label }}</label>
-                {{ form.dump_ftp_host }}
-
-                <label for="{{ form.dump_ftp_port.id_for_label }}"><span class="required"></span>{{ form.dump_ftp_port.label }}</label>
-                {{ form.dump_ftp_port }}
-
-                <label for="{{ form.dump_ftp_username.id_for_label }}"><span class="required"></span>{{ form.dump_ftp_username.label }}</label>
-                {{ form.dump_ftp_username }}
-
-                <label for="{{ form.dump_ftp_password.id_for_label }}"><span class="required"></span>{{ form.dump_ftp_password.label }}</label>
-                <div class="password-field">
-                  {{ form.dump_ftp_password }}
-                  <span class="password-toggle-icon"><i class="fas fa-eye"> Show Password</i></span>
+            <div class="summary-container">
+              <!-- {% if install_type == 'remote'  %}
+                <div class="summary-item">
+                  <label for="{{ form.host.id_for_label }}"><span class="required"></span>{{ form.host.label }}</label>
+                  <input type="text" id="summary1" class="summary-input" value="" disabled>
                 </div>
                 
-                <label for="{{ form.dump_ftp_dump_path.id_for_label }}"><span class="required"></span>{{ form.dump_ftp_dump_path.label }}</label>
-                {{ form.dump_ftp_dump_path }}
-
-                <div id="test-connection-container">
-                  <button type="button" id="test-ftp-button" class="btn btn-submit">Test FTP Connection</button>
-
-                  <div class="ftp-spinner" style="display: none;"></div> <!-- Initially hidden spinner -->
-
-                  <p id="test-ftp-result"></p>  <!-- Placeholder for the result -->
+                <div class="summary-item">
+                  <label for="{{ form.remote_connect_password.id_for_label }}"><span class="required"></span>{{ form.remote_connect_password.label }}</label>
+                  <input type="text" id="summary2" class="summary-input" value="" disabled>
                 </div>
+
+                <div class="summary-item">
+                  <label for="{{ form.root_password.id_for_label }}"><span class="required"></span>{{ form.root_password.label }}</label>
+                  <input type="text" id="summary3" class="summary-input" value="" disabled>
+                </div>
+              {% endif %} -->
+
+              <div class="summary-item">
+                <label for="{{ form.selected_country.id_for_label }}"><span class="required"></span>Country ISO3 Code:</label>
+                <input type="text" id="summary18" class="summary-input" value="" disabled>
+              </div>
+
+              <div class="summary-item">
+                <label for="{{ form.surface_repo_path.id_for_label }}"><span class="required"></span>{{ form.surface_repo_path.label }}</label>
+                <input type="text" id="summary4" class="summary-input" value="" disabled>
+              </div>
+              
+              <!-- <div class="summary-item">
+                <label for="{{ form.data_path.id_for_label }}">{{ form.data_path.label }}</label>
+                <input type="text" id="summary5" class="summary-input" value="" disabled>
+              </div> -->
+
+              <div class="summary-item">
+                <label for="{{ form.admin.id_for_label }}"><span class="required"></span>{{ form.admin.label }}</label>
+                <input type="text" id="summary6" class="summary-input" value="" disabled>
+              </div>
+
+              <div class="summary-item">
+                <label for="{{ form.admin_password.id_for_label }}"><span class="required"></span>{{ form.admin_password.label }}</label>
+                <input type="text" id="summary7" class="summary-input" value="" disabled>
+              </div>
+              
+              <div class="summary-item">
+                <label for="{{ form.admin_email.id_for_label }}"><span class="required"></span>{{ form.admin_email.label }}</label>
+                <input type="text" id="summary8" class="summary-input" value="" disabled>
+              </div>
+
+              <div class="summary-item">
+                <label for="{{ form.map_latitude.id_for_label }}"><span class="required"></span>{{ form.map_latitude.label }}</label>
+                <input type="text" id="summary9" class="summary-input" value="" disabled>
+              </div>
+
+              <div class="summary-item">
+                <label for="{{ form.map_longitude.id_for_label }}"><span class="required"></span>{{ form.map_longitude.label }}</label>
+                <input type="text" id="summary10" class="summary-input" value="" disabled>
+              </div>
+
+              <div class="summary-item">
+                <label for="{{ form.map_zoom.id_for_label }}"><span class="required"></span>{{ form.map_zoom.label }}</label>
+                <input type="text" id="summary11" class="summary-input" value="" disabled>
+              </div>
+
+              <div class="summary-item">
+                <label for="{{ form.spatial_analysis_initial_latitude.id_for_label }}"><span class="required"></span>{{ form.spatial_analysis_initial_latitude.label }}</label>
+                <input type="text" id="summary12" class="summary-input" value="" disabled>
+              </div>
+
+              <div class="summary-item">
+                <label for="{{ form.spatial_analysis_initial_longitude.id_for_label }}"><span class="required"></span>{{ form.spatial_analysis_initial_longitude.label }}</label>
+                <input type="text" id="summary13" class="summary-input" value="" disabled>
+              </div>
+
+              <div class="summary-item">
+                <label for="{{ form.spatial_analysis_final_latitude.id_for_label }}"><span class="required"></span>{{ form.spatial_analysis_final_latitude.label }}</label>
+                <input type="text" id="summary14" class="summary-input" value="" disabled>
+              </div>
+
+              <div class="summary-item">
+                <label for="{{ form.spatial_analysis_final_longitude.id_for_label }}"><span class="required"></span>{{ form.spatial_analysis_final_longitude.label }}</label>
+                <input type="text" id="summary15" class="summary-input" value="" disabled>
+              </div>
+
+              <div class="summary-item">
+                <label for="{{ form.wis2box_topic_hierarchy.id_for_label }}"><span class="required"></span>{{ form.wis2box_topic_hierarchy.label }}</label>
+                <input type="text" id="summary16" class="summary-input" value="" disabled>
+              </div>
+
+              <div class="summary-item">
+                <label for="{{ form.surface_encryption_key.id_for_label }}"><span class="required"></span>{{ form.surface_encryption_key.label }}</label>
+                <input type="text" id="summary17" class="summary-input" value="" disabled>
               </div>
 
             </div>
 
-          </div>
-        </div>
-        
-        <div id="tab1" class="tabcontent">
-          <div class="form-group">
-            <label for="{{ form.admin.id_for_label }}"><span class="required"></span>{{ form.admin.label }}</label>
-            {{ form.admin }}
-
-            <label for="{{ form.admin_password.id_for_label }}"><span class="required"></span>{{ form.admin_password.label }}</label>
-            <div class="password-field">
-              {{ form.admin_password }} 
-              <span class="password-toggle-icon"><i class="fas fa-eye"> Show Password</i></span>
-            </div>
-            
-            <label for="{{ form.admin_email.id_for_label }}"><span class="required"></span>{{ form.admin_email.label }}</label>
-            {{ form.admin_email }}
-          </div>
-        </div>
-
-        <!-- Country Configurations -->
-        <div id="tab2" class="tabcontent">
-
-          <div class="form-group">
-            <!-- Country selecter -->
-            <label for="{{ form.selected_country.id_for_label }}"><span class="required"></span>{{ form.selected_country.label }}</label>
-            {{ form.selected_country }}
-          </div>
-
-          <!-- country configuration main items -->
-          <div id="country_config">
-            <!-- topic heirarchy option -->
-            <label for="{{ form.wis2box_topic_hierarchy.id_for_label }}"><span class="required"></span>{{ form.wis2box_topic_hierarchy.label }}</label>
-            {{ form.wis2box_topic_hierarchy }}
-
-            <!-- encryption key section -->
-            <label for="{{ form.surface_encryption_key.id_for_label }}"><span class="required"></span>{{ form.surface_encryption_key.label }}</label>
-            {{ form.surface_encryption_key }}
-
-            <!-- Timezone name -->
-            <label for="{{ form.timezone_name.id_for_label }}"><span class="required"></span>{{ form.timezone_name.label }}</label>
-            {{ form.timezone_name }}
-
-            <!-- Timezone offset -->
-            <label for="{{ form.timezone_offset.id_for_label }}"><span class="required"></span>{{ form.timezone_offset.label }}</label>
-            {{ form.timezone_offset }}
-
-            <!-- Map Coords options -->
-            <div class="map-container" id="mapContainer">
-              <!-- overlay sits on top of the map -->
-              <div class="map-overlay" id="mapOverlay" aria-hidden="false" role="button" tabindex="0">
-              <div class="hint">Click to edit the map</div>
-              </div>
-
-
-              <!-- the map -->
-              <div id="initial-map"></div>
-
-
-              <!-- close button appears while editing so user can re-enable overlay -->
-              <button class="close-edit" id="closeEdit" aria-hidden="true" title="Close edit (re-enable overlay)">Close edit</button>
-            </div>
-            
-            <div class="form-group">
-              <!-- latitude option -->
-              <label for="{{ form.map_latitude.id_for_label }}"><span class="required"></span>{{ form.map_latitude.label }}</label>
-              {{ form.map_latitude }}
-
-              <!-- longitude option -->
-              <label for="{{ form.map_longitude.id_for_label }}"><span class="required"></span>{{ form.map_longitude.label }}</label>
-              {{ form.map_longitude }}
-
-              <!-- zoom option -->
-              <label for="{{ form.map_zoom.id_for_label }}"><span class="required"></span>{{ form.map_zoom.label }} (between 0 - 15)</label>
-              {{ form.map_zoom }}
-
-              <!-- spatial analysis initial lat -->
-              <label for="{{ form.spatial_analysis_initial_latitude.id_for_label }}"><span class="required"></span>{{ form.spatial_analysis_initial_latitude.label }}</label>
-              {{ form.spatial_analysis_initial_latitude }}
-
-              <!-- spatial analysis initial lng -->
-              <label for="{{ form.spatial_analysis_initial_longitude.id_for_label }}"><span class="required"></span>{{ form.spatial_analysis_initial_longitude.label }}</label>
-              {{ form.spatial_analysis_initial_longitude }}
-
-              <!-- spatial analysis final lat -->
-              <label for="{{ form.spatial_analysis_final_latitude.id_for_label }}"><span class="required"></span>{{ form.spatial_analysis_final_latitude.label }}</label>
-              {{ form.spatial_analysis_final_latitude }}
-
-              <!-- spatial analysis initial lng -->
-              <label for="{{ form.spatial_analysis_final_longitude.id_for_label }}"><span class="required"></span>{{ form.spatial_analysis_final_longitude.label }}</label>
-              {{ form.spatial_analysis_final_longitude }}
-            </div>
-          </div>
-        </div>
-
-        <div id="tab3" class="tabcontent">
-          <div class="info-section">
-            <label style="font-size: 20px;">Setup LRGS capabilities</label>
-            <p>
-              LRGS (Low-Rate Data Receiver System) is a system that enables the reception of messages from satellite stations, 
-              which is crucial for receiving and processing weather data. By configuring LRGS in SURFACE, you can ensure 
-              seamless communication with satellite stations.
-            </p>
-          
-            <p>
-              <strong>Note:</strong> Before enabling this option, it is recommended that you have an existing LRGS username and password. 
-              <!-- You can apply for an LRGS account through the following organizations: -->
+            <p style="font-weight: bold;">
+              Note: Submission is not allow until all required options are completed. Fields beginning with 
+              <span class="required"></span> 
+              are required and must be filled out!
             </p>
 
-            <!-- The toggle button -->
-            <div class="toggle-btn-container">
-              <label style="font-size: 20px; margin-right: 10px;">Enable LRGS</label>
-              <label class="switch">
-                <input type="checkbox" id="toggle-lrgs">
-                <span class="slider"></span>
-              </label>
-            </div>
-
-            
-            <!-- <ul>
-              <li>
-                <strong>NOAA NESDIS (U.S.):</strong> Visit 
-                <a href="https://www.nesdis.noaa.gov" target="_blank">NOAA NESDIS User Services</a> to request access to LRGS 
-                services for satellite data reception.
-              </li>
-              <li>
-                <strong>USGS EROS Center:</strong> Visit 
-                <a href="https://eros.usgs.gov" target="_blank">USGS EROS</a> to explore satellite data reception services 
-                and request an LRGS account.
-              </li>
-              <li>
-                <strong>International Users:</strong> Contact the World Meteorological Organization (WMO) for satellite data access. 
-                Visit <a href="https://www.wmo.int/pages/prog/sat/index_en.php" target="_blank">WMO Satellite User Resources</a> 
-                for more information.
-              </li>
-            </ul> -->
-          
           </div>
+
+          <!-- prev, next & submit -->
+          <div id="next-continue-btn" class="btn-continue-class">
+            <button type="button" class="btn btn-primary btn-back" onclick="prevTab()">Back</button>
+            <button type="button" class="btn btn-primary btn-continue" onclick="nextTab()">Continue</button>
+            <button type="submit" id="submitBtn" class="btn btn-submit">Save Configuration</button>
+          </div>
+        </form>
+
+      </section>
+
+      <!-- Scroll to button button -->
+      <!-- <button onclick="scrollToTop()" class="scroll-btn scroll-btn-top">
+        <i class="fas fa-chevron-up"></i>
+      </button> -->
+    </div>
+
+    <!-- Release Version -->
+    <div class="version-label">
+      <a href="#" style="padding: 0 16px; color: #1e90ff;">
+        <i id="version-icon" class="material-icons" style="color: #1e90ff;">info</i>
+        {{ APP_VERSION_LABEL }}
+      </a>
+    </div>
     
-          <div class="form-group" id="lrgs-details">
-           <p style="font-size: smaller;"> <span class="required"></span>These options are NOT required!</p>
+    <!-- script information -->
+    <script type="text/javascript">
+      // Automatically populate surface_repo_path with users home directory only on local installs
+      "{% if install_type != 'remote'  %}"
+        document.querySelector('[name="surface_repo_path"]').value = "{{ user_home_dir }}";
+      "{% endif %}"
 
-            <label for="{{ form.lrgs_user.id_for_label }}">{{ form.lrgs_user.label }}</label>
-            {{ form.lrgs_user }}
+      // Async function to handle the loading and displaying of content
+      async function handleLoading() {
+        var loaderContainer = document.getElementById('loader-container-id');
+        var loader = document.getElementById('loader');
+        var content = document.getElementById('content');
 
-            <label for="{{ form.lrgs_password.id_for_label }}">{{ form.lrgs_password.label }}</label>
-            <div class="password-field">
-              {{ form.lrgs_password }}
-              <span class="password-toggle-icon"><i class="fas fa-eye"> Show Password</i></span>
-            </div>
-          </div>
-        </div>
+        // Wait for an additional 1 seconds before displaying the content
+        await new Promise(resolve => setTimeout(resolve, 2000));
 
-        <div id="tab4" class="tabcontent">
-          <p class="dark-text">If satisfied with the configuration settings, click the 'Save Configuration' button to proceed.</p>
+        // Remove 'hide' class from content to display it
+        content.classList.remove('hide');
+        // Hide loader by adding 'hide' class back
+        loaderContainer.classList.add('hide');
+        loaderContainer.classList.remove('loader-container');
+      }
 
-          <div class="summary-container">
-            {% if install_type == 'remote'  %}
-              <div class="summary-item">
-                <label for="{{ form.host.id_for_label }}"><span class="required"></span>{{ form.host.label }}</label>
-                <input type="text" id="summary1" class="summary-input" value="" disabled>
-              </div>
-              
-              <div class="summary-item">
-                <label for="{{ form.remote_connect_password.id_for_label }}"><span class="required"></span>{{ form.remote_connect_password.label }}</label>
-                <input type="text" id="summary2" class="summary-input" value="" disabled>
-              </div>
+      // Wait for the DOM content to fully load
+      document.addEventListener('DOMContentLoaded', handleLoading);
 
-              <div class="summary-item">
-                <label for="{{ form.root_password.id_for_label }}"><span class="required"></span>{{ form.root_password.label }}</label>
-                <input type="text" id="summary3" class="summary-input" value="" disabled>
-              </div>
-            {% endif %}
+      // hide the country config items
+      document.addEventListener("DOMContentLoaded", () => {
 
-            <div class="summary-item">
-              <label for="{{ form.surface_repo_path.id_for_label }}"><span class="required"></span>{{ form.surface_repo_path.label }}</label>
-              <input type="text" id="summary4" class="summary-input" value="" disabled>
-            </div>
-            
-            <div class="summary-item">
-              <label for="{{ form.data_path.id_for_label }}">{{ form.data_path.label }}</label>
-              <input type="text" id="summary5" class="summary-input" value="" disabled>
-            </div>
+          // Get the <select> element using Django’s generated ID
+          const select = document.getElementById("{{ form.selected_country.id_for_label }}");
 
-            <div class="summary-item">
-              <label for="{{ form.admin.id_for_label }}"><span class="required"></span>{{ form.admin.label }}</label>
-              <input type="text" id="summary6" class="summary-input" value="" disabled>
-            </div>
+          // Get the country_config div
+          const infoDiv = document.getElementById("country_config");
 
-            <div class="summary-item">
-              <label for="{{ form.admin_password.id_for_label }}"><span class="required"></span>{{ form.admin_password.label }}</label>
-              <input type="text" id="summary7" class="summary-input" value="" disabled>
-            </div>
-            
-            <div class="summary-item">
-              <label for="{{ form.admin_email.id_for_label }}"><span class="required"></span>{{ form.admin_email.label }}</label>
-              <input type="text" id="summary8" class="summary-input" value="" disabled>
-            </div>
+          // Safety check (prevents console errors if elements not found)
+          if (!select || !infoDiv) return;
 
-            <div class="summary-item">
-              <label for="{{ form.map_latitude.id_for_label }}"><span class="required"></span>{{ form.map_latitude.label }}</label>
-              <input type="text" id="summary9" class="summary-input" value="" disabled>
-            </div>
+          // Hide info div initially (if placeholder is selected)
+          infoDiv.style.display = select.value === '###' ? 'none' : 'block';
 
-            <div class="summary-item">
-              <label for="{{ form.map_longitude.id_for_label }}"><span class="required"></span>{{ form.map_longitude.label }}</label>
-              <input type="text" id="summary10" class="summary-input" value="" disabled>
-            </div>
+          // Listen for user selecting something
+          select.addEventListener("change", () => {
+              // If current value is the empty placeholder -> hide the div
+              if (select.value === '###') {
+                  infoDiv.style.display = 'none';
+                  reset_populate_details() // reset the country details
+              }
+              // If user selected a real country -> show the div
+              else {
+                
+                infoDiv.style.display = 'block'; // displaty country details
+                
+                retrieve_populate_details(select.value) // retrieve and populate country details (passed in the iso3 code)
+              }
+          });
+      });
 
-            <div class="summary-item">
-              <label for="{{ form.map_zoom.id_for_label }}"><span class="required"></span>{{ form.map_zoom.label }}</label>
-              <input type="text" id="summary11" class="summary-input" value="" disabled>
-            </div>
+      // redirect to the home page
+      function goHome() {
+        // Redirects the current window to Google's homepage
+        window.location.href = "{% url 'wx_configuration' %}";
+      }
+    </script>
 
-            <div class="summary-item">
-              <label for="{{ form.spatial_analysis_initial_latitude.id_for_label }}"><span class="required"></span>{{ form.spatial_analysis_initial_latitude.label }}</label>
-              <input type="text" id="summary12" class="summary-input" value="" disabled>
-            </div>
+    <!-- Including js file -->
+    <script src="{% static 'surface_app/js/script.js' %}"></script>
 
-            <div class="summary-item">
-              <label for="{{ form.spatial_analysis_initial_longitude.id_for_label }}"><span class="required"></span>{{ form.spatial_analysis_initial_longitude.label }}</label>
-              <input type="text" id="summary13" class="summary-input" value="" disabled>
-            </div>
-
-            <div class="summary-item">
-              <label for="{{ form.spatial_analysis_final_latitude.id_for_label }}"><span class="required"></span>{{ form.spatial_analysis_final_latitude.label }}</label>
-              <input type="text" id="summary14" class="summary-input" value="" disabled>
-            </div>
-
-            <div class="summary-item">
-              <label for="{{ form.spatial_analysis_final_longitude.id_for_label }}"><span class="required"></span>{{ form.spatial_analysis_final_longitude.label }}</label>
-              <input type="text" id="summary15" class="summary-input" value="" disabled>
-            </div>
-
-            <div class="summary-item">
-              <label for="{{ form.wis2box_topic_hierarchy.id_for_label }}"><span class="required"></span>{{ form.wis2box_topic_hierarchy.label }}</label>
-              <input type="text" id="summary16" class="summary-input" value="" disabled>
-            </div>
-
-            <div class="summary-item">
-              <label for="{{ form.surface_encryption_key.id_for_label }}"><span class="required"></span>{{ form.surface_encryption_key.label }}</label>
-              <input type="text" id="summary17" class="summary-input" value="" disabled>
-            </div>
-            
-            <!-- <div class="summary-item">
-              <label for="{{ form.wis2box_user_regional.id_for_label }}"><span></span>{{ form.wis2box_user_regional.label }}</label>
-              <input type="text" id="summary18" class="summary-input" value="" disabled>
-            </div>
-            
-            <div class="summary-item">
-              <label for="{{ form.wis2box_password_regional.id_for_label }}"><span></span>{{ form.wis2box_password_regional.label }}</label>
-              <input type="text" id="summary19" class="summary-input" value="" disabled>
-            </div>
-            
-            <div class="summary-item">
-              <label for="{{ form.wis2box_endpoint_regional.id_for_label }}"><span></span>{{ form.wis2box_endpoint_regional.label }}</label>
-              <input type="text" id="summary20" class="summary-input" value="" disabled>
-            </div>
-            
-            <div class="summary-item">
-              <label for="{{ form.wis2box_user_local.id_for_label }}"><span></span>{{ form.wis2box_user_local.label }}</label>
-              <input type="text" id="summary21" class="summary-input" value="" disabled>
-            </div>
-            
-            <div class="summary-item">
-              <label for="{{ form.wis2box_password_local.id_for_label }}"><span></span>{{ form.wis2box_password_local.label }}</label>
-              <input type="text" id="summary22" class="summary-input" value="" disabled>
-            </div>
-            
-            <div class="summary-item">
-              <label for="{{ form.wis2box_endpoint_local.id_for_label }}"><span></span>{{ form.wis2box_endpoint_local.label }}</label>
-              <input type="text" id="summary23" class="summary-input" value="" disabled>
-            </div>                         
-            -->
-
-          </div>
-
-          <p>
-            Note: The form will not allow you to submit unless all required information is entered. Fields beginning with 
-            <span class="required"></span> 
-            are required and must be filled out!
-          </p>
-
-        </div>
-
-        <div id="next-continue-btn" class="btn-continue">
-          <button type="button" class="btn btn-primary btn-back" onclick="prevTab()">Back</button>
-          <button type="button" class="btn btn-primary btn-continue" onclick="nextTab()">Continue</button>
-          <button type="submit" id="submitBtn" class="btn btn-submit">Save Configuration</button>
-        </div>
-      </form>
-
-    </section>
-
-    <!-- Scroll to button button -->
-    <button onclick="scrollToTop()" class="scroll-btn scroll-btn-top">
-      <i class="fas fa-chevron-up"></i>
-    </button>
-  </div>
-
-  <h5 style="color: grey; position: fixed; bottom: 0; left: 0; z-index: 9999; margin: 8px; font-weight: 300; background-color: rgb(240, 240, 240); padding: 4px; border-radius: 5px;">
-      {{ APP_VERSION_LABEL }}
-  </h5>
-
-  <script type="text/javascript">
-    // Automatically populate surface_repo_path with users home directory only on local installs
-    "{% if install_type != 'remote'  %}"
-      document.querySelector('[name="surface_repo_path"]').value = "{{ user_home_dir }}";
-    "{% endif %}"
-
-    // Async function to handle the loading and displaying of content
-    async function handleLoading() {
-      var loaderContainer = document.getElementById('loader-container');
-      var loader = document.getElementById('loader');
-      var content = document.getElementById('content');
-
-      // Wait for an additional 1 seconds before displaying the content
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      // Remove 'hide' class from content to display it
-      content.classList.remove('hide');
-      // Hide loader by adding 'hide' class back
-      loaderContainer.classList.add('hide');
-      loaderContainer.classList.remove('loader-container');
-    }
-
-    // Wait for the DOM content to fully load
-    document.addEventListener('DOMContentLoaded', handleLoading);
-
-    // hide the country config items
-    document.addEventListener("DOMContentLoaded", () => {
-
-        // Get the <select> element using Django’s generated ID
-        const select = document.getElementById("{{ form.selected_country.id_for_label }}");
-
-        // Get the country_config div
-        const infoDiv = document.getElementById("country_config");
-
-        // Safety check (prevents console errors if elements not found)
-        if (!select || !infoDiv) return;
-
-        // Hide info div initially (if placeholder is selected)
-        infoDiv.style.display = select.value === '###' ? 'none' : 'block';
-
-        // Listen for user selecting something
-        select.addEventListener("change", () => {
-            // If current value is the empty placeholder -> hide the div
-            if (select.value === '###') {
-                infoDiv.style.display = 'none';
-                reset_populate_details() // reset the country details
-            }
-            // If user selected a real country -> show the div
-            else {
-              
-              infoDiv.style.display = 'block'; // displaty country details
-              
-              retrieve_populate_details(select.value) // retrieve and populate country details (passed in the iso3 code)
-            }
-        });
-    });
-
-  </script>
-
-  <!-- Including js file -->
-  <script src="{% static 'surface_app/js/script.js' %}"></script>
-
-</body>
+  </body>
 </html>

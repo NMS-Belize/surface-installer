@@ -8,116 +8,72 @@
 
         <link rel="icon" type="image/png" href="{% static 'surface_app/images/circle_logo_small.png' %}">
         <link rel="stylesheet" href="{% static 'config_app/css/style.css' %}">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
-        <title>Weathereye</title>
-
-        <style>
-            body {
-                background: url("{% static 'config_app/images/bg-2.jpg' %}") no-repeat center center fixed;
-            }
-        </style>
+        <title>Surface Installer</title>
     </head>
+
     <body>
-        <div class="container">
-            <!-- <div class="title"><h1>WEATHEREYE Apps</h1></div> -->
-            <div class="title"><h1>SURFACE Installer</h1></div>
-            <div class="card-container">
+        <!-- Add the accent background -->
+        <div class="accent_background"></div>
 
-                <!-- WIS2BOX -->
-                <!-- <div class="flip-card">
-                    <div class="flip-card-inner">
-                        <div class="flip-card-front">
-                            <button class="main-button w2b-button">WIS2BOX</button>
+        <section>
+            <!-- SURFACE Logo -->
+            <div class="logo"></div>
+
+            <!-- Installation type selection -->
+            <div class="option-container">
+                {% if allow_surface_install %}
+
+                    <form id="installTypeForm" method="post">
+                        {% csrf_token %}
+                        {% for radio in surface_form.install_type %}
+                        {% if not forloop.first %}
+                            {{ radio.tag }}
+                            <label class="option {{ radio.choice_label|lower }}-btn"
+                                for="{{ radio.id_for_label }}">
+                                {{ radio.choice_label }} Install
+                            </label>
+                        {% endif %}
+                        {% endfor %}
+                    </form>
+
+                {% else %}
+
+                    <!-- add either .local or .remote to match the selected install type -->
+                    <div class="install-progress-container" role="status" aria-live="polite">
+                        <div class="install-pulse" aria-hidden="true">
+                            <div class="pulse-circle"></div>
+                            <div class="pulse-lines">
+                            <div class="pulse-line"></div>
+                            <div class="pulse-line short"></div>
+                            </div>
                         </div>
-                        <div class="flip-card-back">
-                            <div class="option-container">
-                                <div class="option-heading-wis2box">WIS2BOX</div>
-                                <a href="#" class="option unavailable">Remote Install</a>
-                                <a href="#" class="option unavailable">Local Install</a>
+
+                        <div class="install-info">
+                            <p class="install-text">Installation in progress…</p>
+                            <div class="view-progress">
+                            <a href="{% url 'config-complete' task_id=surface_task_id %}" class="btn btn-progress">View Progress</a>
                             </div>
                         </div>
                     </div>
-                </div> -->
 
-                <!-- SURFACE -->
-                <div class="flip-card">
-                    <div class="flip-card-inner">
-                        <div class="flip-card-front">
-                            <button class="main-button surface-button">SURFACE</button>
-                        </div>
-                        <div class="flip-card-back">
-                            <div class="option-container">
-                                <div class="option-heading-surface">SURFACE</div>
-                                {% if allow_surface_install %}
-
-                                    <form id="installTypeForm" method="post">
-                                        {% csrf_token %}
-                                        {% for radio in surface_form.install_type %}
-                                            {% if not forloop.first %}
-                                                <span style="display: none;">{{ radio.tag }}</span>
-                                                <label class="option" for="{{ radio.id_for_label }}">{{ radio.choice_label }} Install</label>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </form>
-
-                                {% else %}
-
-                                    <div>
-                                        <p>Installation in progress...</p>
-                                    </div>
-
-                                    <div class="view-progress">
-                                        <a href="{% url 'config-complete' task_id=surface_task_id %}" class="btn btn-progress">View Progress</a>
-                                    </div>
-
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- OPENCDMS -->
-                <!-- <div class="flip-card">
-                    <div class="flip-card-inner">
-                        <div class="flip-card-front">
-                            <button class="main-button opencdms-button">OPENCDMS</button>
-                        </div>
-                        <div class="flip-card-back">
-                            <div class="option-container">
-                                <div class="option-heading-opencdms">OPENCDMS</div>
-                                <a href="#" class="option unavailable">Remote Install</a>
-                                <a href="#" class="option unavailable">Local Install</a>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
-
-                <!-- PORTAL -->
-                <!-- <div class="flip-card">
-                    <div class="flip-card-inner">
-                        <div class="flip-card-front">
-                            <button class="main-button portal-button">PORTAL</button>
-                        </div>
-                        <div class="flip-card-back">
-                            <div class="option-container">
-                                <div class="option-heading-portal">PORTAL</div>
-                                <a href="#" class="option unavailable">Remote Install</a>
-                                <a href="#" class="option unavailable">Local Install</a>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
+                {% endif %}
 
             </div>
-        </div>
+        </section>
 
-        <div class="credit">
+        <!-- <div class="credit">
             <a href="https://www.vecteezy.com/free-vector/globe-grid" target="_blank" rel="noopener noreferrer">Globe Grid Vectors by Vecteezy</a>
-        </div> 
+        </div>  -->
         
-        <h5 style="color: grey; position: fixed; bottom: 0; left: 0; z-index: 9999; margin: 8px; font-weight: 300; background-color: rgb(240, 240, 240); padding: 4px; border-radius: 5px;">
-            {{ APP_VERSION_LABEL }}
-        </h5>
+        <!-- Release Version -->
+        <div class="version-label">
+            <a href="#" style="padding: 0 16px; color: #1e90ff;">
+                <i id="version-icon" class="material-icons" style="color: #1e90ff;">info</i>
+                {{ APP_VERSION_LABEL }}
+            </a>
+        </div>
 
         <!-- Including js file -->
         <script src="{% static 'config_app/js/script.js' %}"></script>

@@ -181,5 +181,5 @@ class SurfaceConfigurationForm(forms.Form):
         label="Country:",
         choices=choices_list,
         required=True,
-        widget=forms.Select(attrs={'class': 'form-control form-larger-size'})
+        widget=forms.Select(attrs={'class': 'form-control form-half-size stripped_select'})
     )
