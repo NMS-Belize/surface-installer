@@ -1,19 +1,46 @@
 body {
-    font-family: Arial, sans-serif;
-    color: #515151;
-    backdrop-filter: blur(10px);
+    font-family: "Helvetica", "Arial", sans-serif;
+    background: url(../images/background.png) no-repeat center center fixed;
     background-size: cover;
+    box-sizing: border-box;
+    height: 100vh;
     display: flex;
     justify-content: center;
-    height: 100vh;
-    margin: 0;
-    padding: 20px;
-    box-sizing: border-box;
+    align-items: center;
 }
 
-.container {
-    text-align: center; 
-    padding: 20px;
+.logo {
+    background-image: url(../images/logo.png);
+    position: relative;
+    width: 100%;
+    height: 100px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    margin-bottom: 1.5rem;
+}
+
+section {
+    border-radius: 10px;
+    filter: drop-shadow(-10px -10px 20px rgba(0, 0, 0, 0.16));
+    padding: 16px;
+    margin-bottom: 2rem;
+    background-color: #fff;
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.accent_background{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* keeps it behind the login section */
+  /* z-index: 1; */
+  background: rgba(0, 123, 255, 0.1) !important;
+  background: linear-gradient(0deg, rgba(0, 123, 255, 0.25) 0%, rgba(255, 193, 7, 0.34) 100%) !important;
 }
 
 .title {
@@ -30,162 +57,61 @@ body {
     margin-top: 20px;
 }
 
-.w2b-button, .surface-button, .opencdms-button, .portal-button  {
-    border: none;
-    color: white;
-    padding: 30px 50px;
-    text-align: center;
-    text-decoration: none;
-    font-size: 24px;
-    width: 200px; 
-    display: flex; /* Added this line */
-    justify-content: center; /* Added this line */
-    align-items: center; /* Added this line */
-    cursor: pointer;
-    border-radius: 10px;
-    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
-    position: relative;
-    transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
-}
-
-.w2b-button {
-    background-color: #4CAF50;
-}
-
-.surface-button {
-    background-color: #2196F3;
-}
-
-.opencdms-button {
-    background-color: #ffa04e;
-}
-
-.portal-button {
-    background-color: #855bd3;
-}
-
-.w2b-button:hover, .surface-button:hover, .opencdms-button:hover, .portal-button:hover {
-    animation: hoverAnimation 0.5s forwards;
-}
-
-.w2b-button:focus, .surface-button:focus, .opencdms-button:focus, .portal-button:focus {
-    outline: none;
-    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.5);
-}
-
-.flip-card {
-    background-color: transparent;
-    width: 200px;
-    height: 150px;
-    perspective: 1000px;
-}
-
-.flip-card-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    transition: transform 0.8s ease-in-out 0.3s;
-    transform-style: preserve-3d;
-    border-radius: 10px;
-}
-
-.flip-card:hover .flip-card-inner {
-    transform: rotateY(180deg);
-}
-
-.flip-card-front, .flip-card-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-    border-radius: 10px;
-}
-
-.flip-card-front {
-    background-color: transparent;
+.option-container form {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    margin-top: 10px;
 }
 
-.flip-card-back {
-    background-color: transparent;
-    transform: rotateY(180deg);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    /* border: 1px solid #ddd; */
-    /* box-shadow: 0 8px 16px rgba(0,0,0,0.2); */
-}
-
-.option-container {
-    background-color: #fff;
-    /* border-radius: 10px 10px 0px 0px; */
-    border-radius: 10px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-}
-
-.option-heading-surface {
-    background-color: #2196F3;
-    border-radius: 10px 10px 0px 0px;
-    padding: 12px 16px;
-    color: #fff;
-}
-
-.option-heading-wis2box {
-    background-color: #4CAF50;
-    border-radius: 10px 10px 0px 0px;
-    padding: 12px 16px;
-    color: #fff;
-}
-
-.option-heading-opencdms {
-    background-color: #ffa04e;
-    border-radius: 10px 10px 0px 0px;
-    padding: 12px 16px;
-    color: #fff;
-}
-
-.option-heading-portal {
-    background-color: #855bd3;
-    border-radius: 10px 10px 0px 0px;
-    padding: 12px 16px;
-    color: #fff;
-}
-
+/* Base button style */
 .option {
-    color: #515151;
-    padding: 12px 16px;
-    font-size: 16px;
-    text-decoration: none;
+    flex: 1;
     text-align: center;
-    display: block;
-    transition: background-color 0.3s ease;
+    padding: 14px 0;
+    border-radius: 8px;
+    cursor: pointer;
+    /* font-weight: 600; */
+    color: white; /* solid text color */
+    transition: all 0.2s ease;
+    user-select: none;
+    border: none; /* remove outline border */
 }
 
-.option:hover {
-    background-color: #ddd;
-    /* border-radius: 0px 0px 10px 10px; */
+/* Hide radio */
+.option-container form input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
 }
 
-.credit {
-    position: fixed;
-    bottom: 10px;
-    right: 10px;
-    font-size: 12px;
-    color: rgba(0, 0, 0, 0.2);
-    text-decoration: none;
+/* --- COLOR PALETTE --- */
+
+/* Local = Green */
+.local-btn {
+    background-color: #4CAF50;
+}
+.local-btn:hover {
+    background-color: #377f3a;
 }
 
-.credit a {
-    color: rgba(0, 0, 0, 0.2);
-    text-decoration: none;
+/* Remote = Purple */
+.remote-btn {
+    background-color: #855bd3;
+}
+.remote-btn:hover {
+    background-color: rgb(81, 50, 138)
 }
 
-.credit a:hover {
-    text-decoration: underline;
+/* --- ACTIVE STATE --- */
+input[type="radio"]:checked + .local-btn,
+label.option.local-btn.active {
+    background-color: #1f7a34;
+}
+
+input[type="radio"]:checked + .remote-btn,
+label.option.remote-btn.active {
+    background-color: #4e2d86;
 }
 
 .btn {
@@ -200,31 +126,6 @@ body {
     transition: background-color 0.3s ease;
 }
 
-.btn-progress {
-    background-color: #f36e21;
-}
-
-.btn-progress:hover {
-    background-color: #e75f11;
-}
-
-.view-progress {
-    margin-bottom: 10px;
-}
-
-/* Define the keyframes for the animation */
-@keyframes hoverAnimation {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.05);
-    }
-    100% {
-        transform: scale(1);
-    }
-}
-
 /* unavailable option styles */
 .unavailable {
     transition: color 0.3s ease;
@@ -234,4 +135,154 @@ body {
 /* Change text color to red when hovered over */
 .unavailable:hover {
     color: red;
+}
+
+.version-label {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  z-index: 9999; /* sits above overlays and content */
+  background: rgba(255, 255, 255, 0.6); /* optional translucent background */
+  backdrop-filter: blur(4px); /* optional frosted-glass effect */
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 0.9rem;
+}
+
+.version-label a {
+  text-decoration: none;
+  color: #1e90ff;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.version-label i {
+  font-size: 18px;
+}
+
+/* ---------- container ---------- */
+.install-progress-container {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+  padding: 18px;
+  margin-top: 15px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  border: 1px solid #e0e0e0;
+  box-sizing: border-box;
+}
+
+/* ---------- pulse artwork ---------- */
+.install-pulse {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 96px;
+  justify-content: center;
+}
+
+/* pulsing circle */
+.pulse-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #e68900;
+  box-shadow: 0 0 0 0 rgba(0,0,0,0.08);
+  position: relative;
+  animation: pulse-scale 1.6s infinite ease-in-out;
+}
+
+/* subtle halo */
+.pulse-circle::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.05), transparent 40%);
+  pointer-events: none;
+}
+
+/* pulsing lines to indicate activity */
+.pulse-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+  width: 80px;
+}
+.pulse-line {
+  height: 10px;
+  width: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.12), rgba(0,0,0,0.06));
+  position: relative;
+  overflow: hidden;
+}
+.pulse-line.short { width: 60%; }
+
+/* animated shimmer running left-to-right */
+.pulse-line::before {
+  content: '';
+  position: absolute;
+  left: -40%;
+  top: 0;
+  height: 100%;
+  width: 40%;
+  transform: skewX(-12deg);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+  animation: shimmer 1.4s infinite linear;
+  mix-blend-mode: screen;
+}
+
+/* ---------- info & text ---------- */
+.install-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0; /* allow truncation */
+}
+
+.install-text {
+  font-size: 1.05rem;
+  margin: 0;
+  color: #444;
+}
+
+/* View progress button — match accent color */
+.btn-progress {
+  display: inline-block;
+  padding: 10px 18px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #fff;
+  background-color: #e68900;
+  border: none;
+  transition: background-color 0.15s ease, transform 0.08s ease;
+}
+.btn-progress:hover { background-color: #d68100; transform: translateY(-1px); }
+.btn-progress:active { transform: translateY(0); }
+
+/* ---------- animations ---------- */
+@keyframes pulse-scale {
+  0%   { transform: scale(1); box-shadow: 0 0 0 0 rgba(0,0,0,0.08); }
+  50%  { transform: scale(1.08); box-shadow: 0 0 0 10px rgba(99,102,241,0.06); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0,0,0,0.0); }
+}
+
+@keyframes shimmer {
+  0%   { left: -40%; }
+  100% { left: 120%; }
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 520px) {
+  .install-progress-container { gap: 12px; padding: 12px; }
+  .install-pulse { min-width: 72px; }
+  .pulse-circle { width: 40px; height: 40px; }
+  .pulse-lines { width: 64px; }
+  .btn-progress { padding: 8px 14px; }
 }

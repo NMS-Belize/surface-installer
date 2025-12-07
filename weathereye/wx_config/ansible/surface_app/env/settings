@@ -1,3 +1,3 @@
 ---
-idle_timeout: 10800
-job_timeout: 10800
+idle_timeout: 432000
+job_timeout: 432000

@@ -16,14 +16,23 @@ sudo_password_file_path = os.path.join(project_dir, 'env', 'become_password')
 # path to sudo password used for local installs
 local_sudo_password_path = os.path.join(os.path.dirname(django_app_dir ),'wx_playbook', 'env', 'become_password')
 
-# path to surface variables file
+# path to surface variables file (for user in the playbooks)
 variable_file_path = os.path.join(project_dir, 'env', 'extravars',)
 
 # path to production.env file
 prod_env_file_path = os.path.join(project_dir, 'env', 'production.env',)
 
+# path to caribbean spatial analysis folder
+spatial_analysis_path = os.path.join(django_app_dir, 'static', 'surface_app', 'spatial_analysis')
+
 # path to remote hosts path
 hosts_file_path = os.path.join(project_dir, 'inventory', 'hosts')
+
+# path to lrgs install jar file
+lrgs_install_jar = os.path.join(project_dir, 'env', 'lrgs', 'lrgs-client-install-6-2-RC03.jar',)
+
+# path lrgs installation script
+lrgs_installation_script = os.path.join(project_dir, 'env', 'lrgs', 'LRGS-installation-script',)
 
 
 def replace_text_in_file(file_path, search_text, replace_text):
@@ -42,10 +51,15 @@ def replace_text_in_file(file_path, search_text, replace_text):
         pass
 
 
+# mainly for use in the playbook execution
 def write_out_surface_variables(form):
     # write out surface variables
     with open(variable_file_path, 'w') as vf:
         vf.write('---\n')
+
+        # write with_data
+        vf.write(f'"with_data": "{form.cleaned_data["with_data"]}"\n')
+
         # write surface_repo_path
         surface_repo_path = form.cleaned_data['surface_repo_path'].strip()
         if surface_repo_path[-1] == "/":
@@ -53,20 +67,90 @@ def write_out_surface_variables(form):
         else:
             vf.write(f'"surface_repo_path": "{surface_repo_path}/surface/"\n')
 
-        # write with_data
-        vf.write(f'"with_data": "{form.cleaned_data["with_data"]}"\n')
-        # write data file path
-        vf.write(f'"data_path": "{form.cleaned_data["data_path"]}"\n')
-        # write data filename
-        vf.write(f'"data_file_name": "{form.cleaned_data["data_path"].strip("/").split("/")[-1]}"\n')
+        # get dumps via ftp
+        ftp_host = form.cleaned_data['dump_ftp_host']
+        ftp_port = form.cleaned_data['dump_ftp_port']
+        ftp_username = form.cleaned_data['dump_ftp_username']
+        ftp_password = form.cleaned_data['dump_ftp_password']
+        ftp_data_dump = form.cleaned_data['dump_ftp_dump_path']
+        
+        if ftp_host and ftp_port and ftp_username and ftp_password and ftp_data_dump:
+            vf.write('"dump_via_ftp": "true"\n')
+
+            vf.write(f'"ftp_host": "{ftp_host}"\n')
+            vf.write(f'"ftp_port": "{ftp_port}"\n')
+            vf.write(f'"ftp_username": "{ftp_username}"\n')
+            vf.write(f'"ftp_password": "{ftp_password}"\n')
+            vf.write(f'"ftp_data_dump": "{ftp_data_dump}"\n')
+
+            ##########################################################################################
+
+            # write data dump filename
+            data_dump_filename = ftp_data_dump.strip("/").split("/")[-1]
+
+            vf.write(f'"data_file_name": "{data_dump_filename}"\n')
+
+            # write data dump file path
+            vf.write(f'"data_path": "{surface_repo_path}/surface/backup_restore_dumps/{data_dump_filename}"\n')
+
+        else:
+            vf.write('"dump_via_ftp": "false"\n')
+            
+            ##########################################################################################
+            
+            # write data dump filename
+            data_dump_filename = form.cleaned_data["data_path"].strip("/").split("/")[-1]
+
+            vf.write(f'"data_file_name": "{data_dump_filename}"\n')
+
+            # write data dump file path
+            vf.write(f'"data_path": "{form.cleaned_data["data_path"]}"\n')
+        
+        
         # write admin
         vf.write(f'"admin": "{form.cleaned_data["admin"].strip()}"\n')
+        
         # write admin_email
         vf.write(f'"admin_email": "{form.cleaned_data["admin_email"].strip()}"\n')
+        
         # write admin_password
         vf.write(f'"admin_password": "{form.cleaned_data["admin_password"]}"\n')
+        
         # path to production.env file
         vf.write(f'"prod_env_path": "{prod_env_file_path}"\n')
+
+        # write path to countries spatial analysis files
+        iso3_code = form.cleaned_data["selected_country"]
+        vf.write(f'"spatial_analysis_files_path": "{os.path.join(spatial_analysis_path, f"{iso3_code}_spatial_analysis")}"\n')
+
+        # writing a variable called enable_lrgs as true if the user entered appropriate LRGS details
+        lrgs_input_username = str(form.cleaned_data["lrgs_user"].strip())
+        lrgs_input_password = str(form.cleaned_data["lrgs_password"].strip())
+
+        # check if the user entered a value for LRGS username and password 
+        if lrgs_input_password and lrgs_input_username:
+            vf.write('"enable_lrgs": "true"\n')
+
+            # SETUP LRGS installation information
+            # writing to variable file path to LRGSClient folder and other neccessary files (on the machine recieving SURFACE)
+            LRGSClient_path = os.path.join(str(form.cleaned_data['surface_repo_path'].strip()), 'surface', 'api', 'LrgsClient',)
+            lrgs_decj = os.path.join(LRGSClient_path, 'bin', 'decj',)
+            lrgs_getDcpMessages = os.path.join(LRGSClient_path, 'bin', 'getDcpMessages',)
+            lrgs_msgaccess = os.path.join(LRGSClient_path, 'bin', 'msgaccess',)
+            lrgs_rtstat = os.path.join(LRGSClient_path, 'bin', 'rtstat',)
+
+            vf.write(f'"LRGSClient_path": "{LRGSClient_path}"\n')
+            vf.write(f'"lrgs_decj": "{lrgs_decj}"\n')
+            vf.write(f'"lrgs_getDcpMessages": "{lrgs_getDcpMessages}"\n')
+            vf.write(f'"lrgs_msgaccess": "{lrgs_msgaccess}"\n')
+            vf.write(f'"lrgs_rtstat": "{lrgs_rtstat}"\n')
+
+            # writing the path to the lrgs  .jar file and the installation script on the host machine
+            vf.write(f'"lrgs_install_jar": "{lrgs_install_jar}"\n')
+            vf.write(f'"lrgs_installation_script": "{lrgs_installation_script}"\n')
+
+        else:
+            vf.write('"enable_lrgs": "false"\n')
 
 
 def write_out_production_variables(form):
@@ -108,6 +192,41 @@ def write_out_production_variables(form):
         prod.write(f'SPATIAL_ANALYSIS_INITIAL_LONGITUDE={form.cleaned_data["spatial_analysis_initial_longitude"]}\n')
         prod.write(f'SPATIAL_ANALYSIS_FINAL_LATITUDE={form.cleaned_data["spatial_analysis_final_latitude"]}\n')
         prod.write(f'SPATIAL_ANALYSIS_FINAL_LONGITUDE={form.cleaned_data["spatial_analysis_final_longitude"]}\n')
+
+        # writing a variable called transmit_wis2_regional and transmit_wis2_local if the options are filled in
+        # Check if wis2box_topic_hierarchy has content (after stripping whitespace)
+        topic_hierarchy_entered = bool(form.cleaned_data.get("wis2box_topic_hierarchy", "").strip())
+
+        # # Check if regional fields have content (after stripping whitespace)
+        # regional_fields_filled = all(
+        #     form.cleaned_data.get(field, "").strip() for field in ["wis2box_user_regional", "wis2box_password_regional", "wis2box_endpoint_regional"]
+        # )
+
+        # # Check if local fields have content (after stripping whitespace)
+        # local_fields_filled = all(
+        #     form.cleaned_data.get(field, "").strip() for field in ["wis2box_user_local", "wis2box_password_local", "wis2box_endpoint_local"]
+        # )
+
+        # # Set enable flags based on conditions
+        # enable_wis2box_regional = "true" if topic_hierarchy_entered and regional_fields_filled else "false"
+        # enable_wis2box_local = "true" if topic_hierarchy_entered and local_fields_filled else "false"
+
+        # # Write to file
+        # prod.write(f'\nENABLE_WIS2BOX_REGIONAL={enable_wis2box_regional}\n')
+        # prod.write(f'ENABLE_WIS2BOX_LOCAL={enable_wis2box_local}\n')
+
+        # Write other fields
+        # prod.write(f'\nWIS2BOX_USER_REGIONAL={form.cleaned_data["wis2box_user_regional"]}\n')
+        # prod.write(f'WIS2BOX_PASSWORD_REGIONAL={form.cleaned_data["wis2box_password_regional"]}\n')
+        # prod.write(f'WIS2BOX_ENDPOINT_REGIONAL={form.cleaned_data["wis2box_endpoint_regional"]}\n')
+
+        # prod.write(f'\nWIS2BOX_USER_LOCAL={form.cleaned_data["wis2box_user_local"]}\n')
+        # prod.write(f'WIS2BOX_PASSWORD_LOCAL={form.cleaned_data["wis2box_password_local"]}\n')
+        # prod.write(f'WIS2BOX_ENDPOINT_LOCAL={form.cleaned_data["wis2box_endpoint_local"]}\n')
+
+        prod.write(f'SURFACE_SECRET_ENCRYPTION_KEY={form.cleaned_data["surface_encryption_key"]}\n')
+
+        prod.write(f'\nWIS2BOX_TOPIC_HIERARCHY={form.cleaned_data["wis2box_topic_hierarchy"]}\n')
 
 
 def write_out_host_connection_details(form, install_type):

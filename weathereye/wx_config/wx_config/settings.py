@@ -24,7 +24,7 @@ STATIC_DIR = BASE_DIR / 'static' # static DIR
 SECRET_KEY = 'django-insecure-5s(17$_#xt=q6y2g_4nf^6j^68*03d95qwvl3ibx51hr@j#cl5'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'surface_app',
     'config_app',
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -65,6 +67,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'core.context_processors.get_installer_version',
             ],
         },
     },
@@ -120,9 +123,9 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-STATIC_ROOT = STATIC_DIR
+STATIC_ROOT = BASE_DIR / 'productionfiles'
 
-STATICFILES_DIRS = []
+STATICFILES_DIRS = [STATIC_DIR,]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -132,3 +135,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Celery settings
 CELERY_BROKER_URL = "redis://localhost:52377/0"
 CELERY_RESULT_BACKEND = "redis://localhost:52377/0"
+
+# app versions
+APP_VERSION = "v0.1.0"
+APP_VERSION_STAGE = "-Stable"
+APP_VERSION_LABEL = f"{APP_VERSION}{APP_VERSION_STAGE}"

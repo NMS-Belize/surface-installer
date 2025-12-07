@@ -10,4 +10,5 @@ Development Lead
 Contributors
 ------------
 
-None yet. Why not be the first?
+* Jeremiah Hammond <jeremiahhammond14@gmail.com>
+* National Meteorological Service of Belize <nmstechbz@gmail.com>

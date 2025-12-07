@@ -59,6 +59,7 @@ def wx_configuration(sudo_password):
                                              playbook='wx_configuration.yml',)
 
         if playbook_result.status == "successful":
+            click.echo(click.style("If installation page doesn't automatically launch within 10 seconds, go to to access installation page http://localhost:52376/", fg='green'))
             click.launch("http://localhost:52376/")
         else:
             click.echo(click.style("\nAn error occured while configuring SURFACE environment variables .", fg='red'))
