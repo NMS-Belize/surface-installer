@@ -113,7 +113,7 @@
         - name: Add shape.png (spatial analysis)
           ansible.builtin.copy:
             src: "{{ spatial_analysis_files_path }}/shape.png"
-            dest: "{{ surface_repo_path }}api/static/images/"
+            dest: "{{ surface_repo_path }}api/static/"
 
         - name: Add Basemap.geojson (spatial analysis)
           ansible.builtin.copy:
